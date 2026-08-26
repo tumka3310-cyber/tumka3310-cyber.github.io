@@ -1,0 +1,28 @@
+<template>
+  <v-container>
+    <h1 class="text-h4">О нас</h1>
+    <p class="text-body-1">Мы — команда...</p>
+
+    <h2 class="text-h5 mt-4">Наша команда</h2>
+    <v-row>
+      <v-col cols="12" sm="6" md="4">
+        <v-card>
+          <v-card-item>
+            <v-card-title>Иван Петров</v-card-title>
+            <v-card-subtitle>Основатель</v-card-subtitle>
+          </v-card-item>
+        </v-card>
+      </v-col>
+      <!-- ... -->
+    </v-row>
+
+    <h2 class="text-h5 mt-4">Что мы делаем</h2>
+    <v-list>
+      <v-list-item prepend-icon="mdi-code-tags" title="Разработка веб-приложений"></v-list-item>
+      <v-list-item prepend-icon="mdi-palette" title="UI/UX дизайн"></v-list-item>
+      <v-list-item prepend-icon="mdi-headset" title="Консультации по MD3"></v-list-item>
+    </v-list>
+
+    <v-btn class="mt-4" color="primary" href="mailto:contact@example.com">Связаться с нами</v-btn>
+  </v-container>
+</template>
