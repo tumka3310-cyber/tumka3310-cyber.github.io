@@ -1,5 +1,6 @@
 /* ===== Base Styles ===== */
 :root {
+    /* Светлая тема (по умолчанию) */
     --md3-primary: #000000;
     --md3-secondary: #ffffff;
     --md3-tertiary: #aaaaaa;
@@ -13,6 +14,37 @@
     --md3-radius: 12px;
 }
 
+/* ===== Тёмная тема ===== */
+[data-theme="dark"] {
+    --md3-primary: #D0BCFF;          /* светло-фиолетовый как основной */
+    --md3-secondary: #141218;
+    --md3-tertiary: #AAAAAA;
+    --md3-surface: #1D1B20;
+    --md3-background: #141218;
+    --md3-on-primary: #381E72;
+    --md3-on-secondary: #E6E0E9;
+    --md3-on-surface: #E6E0E9;
+    --md3-border: 1px solid #49454F;
+    --md3-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* ===== Системная тёмная тема (если не выбран data-theme) ===== */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]):not([data-theme="dark"]) {
+        --md3-primary: #D0BCFF;
+        --md3-secondary: #141218;
+        --md3-tertiary: #AAAAAA;
+        --md3-surface: #1D1B20;
+        --md3-background: #141218;
+        --md3-on-primary: #381E72;
+        --md3-on-secondary: #E6E0E9;
+        --md3-on-surface: #E6E0E9;
+        --md3-border: 1px solid #49454F;
+        --md3-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    }
+}
+
+/* ===== Общие стили ===== */
 * {
     margin: 0;
     padding: 0;
@@ -29,6 +61,7 @@ body {
     justify-content: center;
     align-items: center;
     padding: 20px;
+    transition: background-color 0.3s ease, color 0.3s ease; /* плавный переход */
 }
 
 .container {
@@ -38,6 +71,7 @@ body {
     border-radius: var(--md3-radius);
     box-shadow: var(--md3-shadow);
     overflow: hidden;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* ===== Header ===== */
@@ -45,6 +79,7 @@ header {
     text-align: center;
     padding: 40px 20px;
     border-bottom: var(--md3-border);
+    transition: border-color 0.3s ease;
 }
 
 .logo {
@@ -60,6 +95,37 @@ header {
     font-weight: 300;
 }
 
+/* Переключатель темы */
+.theme-switcher {
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.theme-switcher label {
+    color: var(--md3-tertiary);
+    font-size: 0.9rem;
+}
+
+.theme-switcher select {
+    padding: 6px 12px;
+    border: var(--md3-border);
+    border-radius: var(--md3-radius);
+    background-color: var(--md3-surface);
+    color: var(--md3-on-surface);
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+.theme-switcher select:focus {
+    border-color: var(--md3-primary);
+}
+
 /* ===== Main ===== */
 main {
     padding: 20px;
@@ -70,6 +136,7 @@ main {
     padding: 30px 20px;
     border-bottom: var(--md3-border);
     margin-bottom: 30px;
+    transition: border-color 0.3s ease;
 }
 
 .hero p {
@@ -94,7 +161,8 @@ main {
 }
 
 .md3-button:hover {
-    background-color: #333333;
+    /* Используем переменную для более тёмного оттенка основного цвета */
+    background-color: color-mix(in srgb, var(--md3-primary) 80%, black);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
@@ -117,7 +185,7 @@ main {
     border-radius: var(--md3-radius);
     padding: 20px;
     box-shadow: var(--md3-shadow);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .card:hover {
@@ -144,6 +212,7 @@ footer {
     border-top: var(--md3-border);
     color: var(--md3-tertiary);
     font-size: 0.9rem;
+    transition: border-color 0.3s ease;
 }
 
 .social-links {
@@ -164,7 +233,7 @@ footer {
 }
 
 .social-link:hover {
-    background-color: #f0f0f0;
+    background-color: color-mix(in srgb, var(--md3-primary) 10%, transparent);
 }
 
 /* ===== Responsive ===== */
