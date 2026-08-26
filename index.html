@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 
-    <!-- ===== Встроенные стили для анимаций ===== -->
+    <!-- ===== Встроенные стили для анимаций и улучшений ===== -->
     <style>
         /* ---------- Переменные ---------- */
         :root {
@@ -164,6 +164,21 @@
             transform: translateY(0);
         }
 
+        /* ---------- Красивая надпись @theftfelt ---------- */
+        .logo {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            font-size: 4rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            transition: transform 0.3s ease;
+        }
+        .logo:hover {
+            transform: scale(1.03);
+        }
+
         /* ---------- Отключение анимаций для prefers-reduced-motion ---------- */
         @media (prefers-reduced-motion: reduce) {
             *,
@@ -176,12 +191,16 @@
             .loader-text span { animation: none; opacity: 1; transform: none; filter: none; }
             .container { animation: none; opacity: 1; }
             header, .hero, .card, footer { animation: none; opacity: 1; }
+            .logo:hover { transform: none; }
         }
 
         /* ---------- Адаптивность для мобильных ---------- */
         @media (max-width: 600px) {
             .loader-text {
                 font-size: 2.5rem;
+            }
+            .logo {
+                font-size: 2.8rem;
             }
         }
     </style>
@@ -245,9 +264,7 @@
         <footer class="scroll-reveal">
             <p>Связаться со мной:</p>
             <div class="social-links">
-                <a href="mailto:theftfelt@example.com" class="social-link">Email</a>
                 <a href="https://t.me/theftfelt" class="social-link">Telegram</a>
-                <a href="https://github.com/tumka3310-cyber" class="social-link">GitHub</a>
             </div>
         </footer>
     </div>
