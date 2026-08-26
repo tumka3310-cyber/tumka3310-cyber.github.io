@@ -9,9 +9,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 
-    <!-- Стили для анимации загрузки -->
+    <!-- ===== Встроенные стили для анимаций ===== -->
     <style>
-        /* Прелоадер */
+        /* ---------- Переменные ---------- */
+        :root {
+            --anim-duration: 0.6s;
+            --anim-ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --hover-lift: -6px;
+        }
+
+        /* ---------- Прелоадер ---------- */
         #preloader {
             position: fixed;
             top: 0;
@@ -32,7 +39,7 @@
             pointer-events: none;
         }
 
-        /* Контейнер для букв */
+        /* Анимация букв */
         .loader-text {
             display: flex;
             font-size: 4rem;
@@ -50,7 +57,6 @@
             animation: letterAppear 0.6s ease forwards;
         }
 
-        /* Анимация появления каждой буквы */
         @keyframes letterAppear {
             to {
                 opacity: 1;
@@ -59,7 +65,6 @@
             }
         }
 
-        /* Подсветка последней точки (или можно добавить курсор) */
         .loader-text .dot {
             animation: dotPulse 1s ease infinite;
         }
@@ -69,7 +74,7 @@
             50% { opacity: 0.2; }
         }
 
-        /* Плавное появление основного контента */
+        /* ---------- Появление контента после загрузки ---------- */
         .container {
             animation: fadeInUp 0.8s ease forwards;
             opacity: 0;
@@ -80,50 +85,111 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Задержки появления секций после загрузки */
-        header {
-            animation: fadeIn 0.8s ease 0.2s both;
-        }
-        .hero {
-            animation: fadeIn 0.8s ease 0.4s both;
-        }
+        /* Последовательное появление секций */
+        header { animation: fadeIn 0.8s ease 0.2s both; }
+        .hero { animation: fadeIn 0.8s ease 0.4s both; }
         .content .card:nth-child(1) { animation: fadeIn 0.8s ease 0.6s both; }
         .content .card:nth-child(2) { animation: fadeIn 0.8s ease 0.8s both; }
         .content .card:nth-child(3) { animation: fadeIn 0.8s ease 1.0s both; }
-        footer {
-            animation: fadeIn 0.8s ease 1.2s both;
-        }
+        footer { animation: fadeIn 0.8s ease 1.2s both; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Улучшенный hover для карточек */
+        /* ---------- Hover-эффекты ---------- */
         .card {
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
         }
         .card:hover {
-            transform: translateY(-8px) scale(1.02);
+            transform: translateY(var(--hover-lift)) scale(1.02);
             box-shadow: 0 12px 24px rgba(0,0,0,0.15);
         }
 
-        /* Отключаем анимации для пользователей, предпочитающих уменьшенное движение */
+        .md3-button {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .md3-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+        .md3-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Эффект "волны" при нажатии (Material Ripple) */
+        .md3-button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255,255,255,0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%, -50%);
+            transform-origin: 50% 50%;
+            pointer-events: none;
+        }
+        .md3-button:active::after {
+            animation: ripple 0.6s ease-out;
+        }
+        @keyframes ripple {
+            0% { transform: scale(0, 0); opacity: 0.5; }
+            100% { transform: scale(20, 20); opacity: 0; }
+        }
+
+        .social-link {
+            transition: color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+            display: inline-block;
+        }
+        .social-link:hover {
+            transform: translateY(-2px);
+            background-color: rgba(0,0,0,0.05);
+        }
+
+        /* ---------- Scroll Reveal ---------- */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .scroll-reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ---------- Отключение анимаций для prefers-reduced-motion ---------- */
         @media (prefers-reduced-motion: reduce) {
-            .loader-text span, .container, header, .hero, .card, footer {
-                animation: none !important;
-                opacity: 1 !important;
-                transform: none !important;
-                filter: none !important;
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .loader-text span { animation: none; opacity: 1; transform: none; filter: none; }
+            .container { animation: none; opacity: 1; }
+            header, .hero, .card, footer { animation: none; opacity: 1; }
+        }
+
+        /* ---------- Адаптивность для мобильных ---------- */
+        @media (max-width: 600px) {
+            .loader-text {
+                font-size: 2.5rem;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Прелоадер с анимацией букв -->
+    <!-- Прелоадер -->
     <div id="preloader">
-        <div class="loader-text" id="loader-text">
-            <!-- Каждая буква оборачивается в span с задержкой анимации -->
+        <div class="loader-text">
             <span style="animation-delay: 0.1s;">@</span>
             <span style="animation-delay: 0.2s;">t</span>
             <span style="animation-delay: 0.3s;">h</span>
@@ -154,21 +220,21 @@
         </header>
 
         <main>
-            <section class="hero">
+            <section class="hero scroll-reveal">
                 <p>Добро пожаловать на мой сайт. Здесь ты найдёшь всё, что нужно.</p>
                 <button class="md3-button">Узнать больше</button>
             </section>
 
             <section class="content">
-                <div class="card">
+                <div class="card scroll-reveal">
                     <h2>Обо мне</h2>
                     <p>Я занимаюсь дизайном и разработкой. Мои работы основаны на принципах Material Design.</p>
                 </div>
-                <div class="card">
+                <div class="card scroll-reveal">
                     <h2>Проекты</h2>
                     <p>Посмотри мои последние проекты и идеи.</p>
                 </div>
-                <div class="card">
+                <div class="card scroll-reveal">
                     <h2>Telegram-бот</h2>
                     <p>@giftsnftrorobot — ваш помощник в мире NFT и подарков.</p>
                     <a href="https://t.me/giftsnftrorobot" class="social-link" target="_blank">Открыть бота</a>
@@ -176,7 +242,7 @@
             </section>
         </main>
 
-        <footer>
+        <footer class="scroll-reveal">
             <p>Связаться со мной:</p>
             <div class="social-links">
                 <a href="mailto:theftfelt@example.com" class="social-link">Email</a>
@@ -189,13 +255,27 @@
     <script src="script.js"></script>
     <script src="theme.js" defer></script>
     <script>
-        // Скрываем прелоадер после загрузки страницы
+        // Скрываем прелоадер после полной загрузки страницы
         window.addEventListener('load', function() {
             const preloader = document.getElementById('preloader');
-            // Даём анимации букв завершиться (1.2 секунды достаточно)
             setTimeout(() => {
                 preloader.classList.add('hidden');
-            }, 1200); // чуть больше, чем задержка последней буквы
+            }, 1200); // даём буквам доиграть
+        });
+
+        // Инициализация Scroll Reveal (плавное появление при прокрутке)
+        document.addEventListener('DOMContentLoaded', function() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.scroll-reveal').forEach(el => {
+                observer.observe(el);
+            });
         });
     </script>
 </body>
