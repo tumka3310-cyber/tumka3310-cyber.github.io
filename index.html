@@ -1,9 +1,8 @@
-
 <!doctype html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#0f1115" />
   <title>@theftfelt</title>
 
@@ -36,9 +35,11 @@
         radial-gradient(circle at bottom right, rgba(184, 199, 255, 0.12), transparent 30%),
         var(--bg);
       color: var(--text);
-      font-family: "Inter", system-ui, sans-serif;
-      overflow: hidden;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow-x: hidden;
       cursor: none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
 
     body::before {
@@ -67,7 +68,8 @@
       z-index: 9999;
       mix-blend-mode: screen;
       box-shadow: 0 0 18px rgba(138, 180, 255, 0.25);
-      transition: width 0.18s ease, height 0.18s ease, border-color 0.18s ease;
+      transition: width 0.18s ease, height 0.18s ease, border-color 0.18s ease, opacity 0.18s ease;
+      opacity: 1;
     }
 
     .cursor-ring.active {
@@ -80,7 +82,7 @@
       min-height: 100vh;
       display: grid;
       place-items: center;
-      padding: 24px;
+      padding: 18px;
     }
 
     .card {
@@ -175,9 +177,10 @@
       text-decoration: none;
       font-weight: 600;
       transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+      min-height: 48px;
     }
 
-    .btn:hover { transform: translateY(-2px); }
+    .btn:active { transform: translateY(1px) scale(0.99); }
 
     .btn-primary {
       background: linear-gradient(135deg, #8ab4ff, #b8c7ff);
@@ -202,6 +205,7 @@
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.08);
       color: var(--muted);
+      word-break: break-word;
     }
 
     .meta-item strong {
@@ -211,9 +215,32 @@
     }
 
     @media (max-width: 760px) {
-      body { overflow: auto; }
-      .grid { grid-template-columns: 1fr; }
-      .card { padding: 22px; }
+      body { cursor: auto; overflow-x: hidden; overflow-y: auto; }
+      .cursor-ring { display: none; }
+      .page { padding: 12px; }
+      .card {
+        padding: 18px;
+        border-radius: 22px;
+      }
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+      .actions {
+        flex-direction: column;
+      }
+      .btn {
+        width: 100%;
+      }
+      h1 {
+        font-size: clamp(34px, 12vw, 54px);
+      }
+      .subtitle {
+        font-size: 15px;
+      }
+      .panel {
+        padding: 18px;
+      }
     }
   </style>
 </head>
@@ -230,11 +257,11 @@
       </div>
 
       <p class="subtitle">
-        Минималистичный сайт с мягкой MD3-подачей, акцентом на автора и быстрым переходом в Telegram.
+        Удобный сайт для телефона и компьютера с мягким MD3-дизайном, автором и переходом в Telegram.
       </p>
 
       <div class="actions">
-        <a class="btn btn-primary" href="https://t.me/your_username" target="_blank" rel="noopener noreferrer">
+        <a class="btn btn-primary" href="https://t.me/theftfelt" target="_blank" rel="noopener noreferrer">
           Перейти в Telegram
         </a>
         <a class="btn btn-secondary" href="#about">
@@ -246,7 +273,8 @@
         <div class="panel">
           <h2>О проекте</h2>
           <p>
-            Здесь можно разместить описание, ссылки, портфолио, контакты или любые блоки из вашего репозитория.
+            Этот шаблон адаптирован под мобильные экраны: кнопки крупнее, блоки идут в одну колонку,
+            а интерфейс удобно листается пальцем.
           </p>
         </div>
 
@@ -259,8 +287,8 @@
             </div>
             <div class="meta-item">
               <strong>Telegram</strong>
-              <a href="https://t.me/your_username" target="_blank" rel="noopener noreferrer" style="color: var(--accent-2); text-decoration: none;">
-                t.me/your_username
+              <a href="https://t.me/theftfelt" target="_blank" rel="noopener noreferrer" style="color: var(--accent-2); text-decoration: none;">
+                t.me/theftfelt
               </a>
             </div>
           </div>
@@ -271,28 +299,35 @@
 
   <script>
     const ring = document.getElementById('cursorRing');
-    let x = window.innerWidth / 2;
-    let y = window.innerHeight / 2;
-    let tx = x;
-    let ty = y;
+    const isTouch = window.matchMedia('(pointer: coarse)').matches;
 
-    window.addEventListener('mousemove', (e) => {
-      tx = e.clientX;
-      ty = e.clientY;
-    });
+    if (isTouch) {
+      ring.style.display = 'none';
+      document.body.style.cursor = 'auto';
+    } else {
+      let x = window.innerWidth / 2;
+      let y = window.innerHeight / 2;
+      let tx = x;
+      let ty = y;
 
-    window.addEventListener('mousedown', () => ring.classList.add('active'));
-    window.addEventListener('mouseup', () => ring.classList.remove('active'));
+      window.addEventListener('mousemove', (e) => {
+        tx = e.clientX;
+        ty = e.clientY;
+      });
 
-    function animate() {
-      x += (tx - x) * 0.18;
-      y += (ty - y) * 0.18;
-      ring.style.left = x + 'px';
-      ring.style.top = y + 'px';
-      requestAnimationFrame(animate);
+      window.addEventListener('mousedown', () => ring.classList.add('active'));
+      window.addEventListener('mouseup', () => ring.classList.remove('active'));
+
+      function animate() {
+        x += (tx - x) * 0.18;
+        y += (ty - y) * 0.18;
+        ring.style.left = x + 'px';
+        ring.style.top = y + 'px';
+        requestAnimationFrame(animate);
+      }
+
+      animate();
     }
-
-    animate();
   </script>
 </body>
-</html>
+  </html>
