@@ -1,1 +1,0 @@
-# tumka3310-cyber.github.io
