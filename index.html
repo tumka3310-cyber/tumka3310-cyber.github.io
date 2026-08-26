@@ -6,20 +6,45 @@
     <title>@theftfelt</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 
-    <!-- ===== Встроенные стили для анимаций, прелоадера и кастомного курсора ===== -->
     <style>
-        /* ---------- Переменные ---------- */
+        /* ============================================
+           ОСНОВНЫЕ ПЕРЕМЕННЫЕ И СБРОС
+           ============================================ */
         :root {
             --anim-duration: 0.6s;
             --anim-ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
             --hover-lift: -6px;
-            --cursor-glow-color: rgba(103, 80, 164, 0.7); /* основной цвет свечения */
+            --cursor-glow-color: rgba(103, 80, 164, 0.8);
+            --glow-primary: #667eea;
+            --glow-secondary: #764ba2;
         }
 
-        /* ---------- Прелоадер ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            cursor: none;
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--md3-background, #f5f5f5);
+            color: var(--md3-on-surface, #1D1B20);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* ============================================
+           ПРЕЛОАДЕР (УЛУЧШЕННАЯ АНИМАЦИЯ ЗАГРУЗКИ)
+           ============================================ */
         #preloader {
             position: fixed;
             top: 0;
@@ -40,58 +65,85 @@
             pointer-events: none;
         }
 
-        /* Анимация букв */
         .loader-text {
             display: flex;
             font-size: 4rem;
-            font-weight: 700;
+            font-weight: 900;
             color: var(--md3-primary, #000000);
             letter-spacing: 0.05em;
             user-select: none;
+            perspective: 500px;
         }
 
         .loader-text span {
             display: inline-block;
             opacity: 0;
-            transform: translateY(30px) scale(0.8);
+            transform: translateY(30px) scale(0.5) rotateX(90deg);
             filter: blur(4px);
-            animation: letterAppear 0.6s ease forwards;
+            animation: letterDrop 0.7s ease forwards;
         }
 
-        @keyframes letterAppear {
-            to {
+        @keyframes letterDrop {
+            0% {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.3) rotateX(90deg);
+                filter: blur(8px);
+            }
+            60% {
                 opacity: 1;
-                transform: translateY(0) scale(1);
+                transform: translateY(10px) scale(1.1) rotateX(-10deg);
+                filter: blur(2px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1) rotateX(0);
                 filter: blur(0);
             }
         }
 
         .loader-text .dot {
-            animation: dotPulse 1s ease infinite;
+            animation: dotPulse 1.2s ease infinite;
         }
 
         @keyframes dotPulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.2; }
+            0%, 100% { opacity: 1; text-shadow: 0 0 10px var(--glow-primary); }
+            50% { opacity: 0.3; text-shadow: none; }
         }
 
-        /* ---------- Появление контента после загрузки ---------- */
+        /* Эффект свечения после полного появления */
+        .loader-text.complete {
+            animation: glowText 2s ease infinite;
+        }
+
+        @keyframes glowText {
+            0%, 100% { text-shadow: 0 0 10px rgba(102,126,234,0.7); }
+            50% { text-shadow: 0 0 25px rgba(118,75,162,0.9); }
+        }
+
+        /* ============================================
+           ПОЯВЛЕНИЕ КОНТЕНТА
+           ============================================ */
         .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: var(--md3-surface, #ffffff);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            overflow: hidden;
             animation: fadeInUp 0.8s ease forwards;
             opacity: 0;
         }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
+            from { opacity: 0; transform: translateY(40px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Последовательное появление секций */
         header { animation: fadeIn 0.8s ease 0.2s both; }
         .hero { animation: fadeIn 0.8s ease 0.4s both; }
         .content .card:nth-child(1) { animation: fadeIn 0.8s ease 0.6s both; }
         .content .card:nth-child(2) { animation: fadeIn 0.8s ease 0.8s both; }
-        .content .card:nth-child(3) { animation: fadeIn 0.8s ease 1.0s both; }
+        .reviews { animation: fadeIn 0.8s ease 1.0s both; }
         footer { animation: fadeIn 0.8s ease 1.2s both; }
 
         @keyframes fadeIn {
@@ -99,30 +151,114 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ---------- Hover-эффекты ---------- */
+        /* ============================================
+           КРАСИВЫЙ ЛОГОТИП @theftfelt
+           ============================================ */
+        .logo {
+            font-size: 4rem;
+            font-weight: 900;
+            letter-spacing: 0.02em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 4s ease infinite;
+            filter: drop-shadow(0 0 10px rgba(102,126,234,0.6));
+            transition: transform 0.3s ease, filter 0.3s ease;
+            display: inline-block;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 0 20px rgba(118,75,162,0.9));
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Блик по тексту */
+        .logo::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 3s infinite linear;
+            background-size: 200% 100%;
+        }
+
+        @keyframes shine {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* ============================================
+           КАРТОЧКИ И КНОПКИ
+           ============================================ */
+        .content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
         .card {
+            background-color: var(--md3-surface, #fff);
+            border: 1px solid var(--md3-border, #e0e0e0);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
         }
+
         .card:hover {
-            transform: translateY(var(--hover-lift)) scale(1.02);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+        }
+
+        .card h2 {
+            color: var(--md3-primary, #000);
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .card p {
+            color: var(--md3-tertiary, #666);
+            font-size: 0.95rem;
         }
 
         .md3-button {
+            background-color: var(--md3-primary, #000);
+            color: var(--md3-on-primary, #fff);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             position: relative;
             overflow: hidden;
         }
+
         .md3-button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-        }
-        .md3-button:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
         }
 
-        /* Эффект "волны" при нажатии (Material Ripple) */
+        .md3-button:active {
+            transform: translateY(0);
+        }
+
         .md3-button::after {
             content: '';
             position: absolute;
@@ -137,56 +273,71 @@
             transform-origin: 50% 50%;
             pointer-events: none;
         }
+
         .md3-button:active::after {
             animation: ripple 0.6s ease-out;
         }
+
         @keyframes ripple {
             0% { transform: scale(0, 0); opacity: 0.5; }
             100% { transform: scale(20, 20); opacity: 0; }
         }
 
-        .social-link {
-            transition: color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
-            display: inline-block;
-        }
-        .social-link:hover {
-            transform: translateY(-2px);
-            background-color: rgba(0,0,0,0.05);
-        }
-
-        /* ---------- Scroll Reveal ---------- */
-        .scroll-reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
-        }
-        .scroll-reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
+        /* ============================================
+           СЕКЦИЯ ОТЗЫВОВ
+           ============================================ */
+        .reviews {
+            padding: 20px;
+            background-color: rgba(0,0,0,0.02);
         }
 
-        /* ---------- Красивая надпись @theftfelt ---------- */
-        .logo {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-            font-size: 4rem;
-            font-weight: 700;
-            letter-spacing: 0.02em;
+        .reviews h2 {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--md3-primary, #000);
+        }
+
+        .review-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .review-card {
+            background: var(--md3-surface, #fff);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            text-align: center;
             transition: transform 0.3s ease;
         }
-        .logo:hover {
-            transform: scale(1.03);
+
+        .review-card:hover {
+            transform: translateY(-5px);
         }
 
-        /* ============================================================
-           КАСТОМНЫЙ КУРСОР (точка + кольцо + свечение)
-           ============================================================ */
-        body {
-            cursor: none; /* скрываем стандартный курсор */
+        .review-stars {
+            color: #FFD700;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
         }
 
+        .review-text {
+            font-style: italic;
+            color: var(--md3-tertiary, #666);
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .review-author {
+            font-weight: 700;
+            color: var(--md3-primary, #000);
+        }
+
+        /* ============================================
+           КАСТОМНЫЙ КУРСОР
+           ============================================ */
         .cursor-dot,
         .cursor-outline {
             position: fixed;
@@ -199,7 +350,6 @@
             transition: width 0.3s ease, height 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
         }
 
-        /* Точка (быстро следует за мышью) */
         .cursor-dot {
             width: 12px;
             height: 12px;
@@ -214,7 +364,6 @@
             50% { box-shadow: 0 0 20px var(--cursor-glow-color), 0 0 40px var(--cursor-glow-color); }
         }
 
-        /* Кольцо (следует с задержкой) */
         .cursor-outline {
             width: 40px;
             height: 40px;
@@ -223,7 +372,6 @@
             transition: width 0.4s ease, height 0.4s ease, border-color 0.3s ease;
         }
 
-        /* Состояние при наведении на интерактивные элементы */
         .cursor-hover .cursor-dot {
             width: 18px;
             height: 18px;
@@ -236,7 +384,6 @@
             border-width: 3px;
         }
 
-        /* Отключаем кастомный курсор на сенсорных устройствах */
         @media (hover: none), (pointer: coarse) {
             .cursor-dot,
             .cursor-outline {
@@ -247,7 +394,21 @@
             }
         }
 
-        /* ---------- Отключение анимаций для prefers-reduced-motion ---------- */
+        /* ============================================
+           АДАПТИВНОСТЬ И ПОДДЕРЖКА REDUCED MOTION
+           ============================================ */
+        @media (max-width: 600px) {
+            .loader-text {
+                font-size: 2.5rem;
+            }
+            .logo {
+                font-size: 2.8rem;
+            }
+            .container {
+                padding: 10px;
+            }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             *,
             *::before,
@@ -258,25 +419,15 @@
             }
             .loader-text span { animation: none; opacity: 1; transform: none; filter: none; }
             .container { animation: none; opacity: 1; }
-            header, .hero, .card, footer { animation: none; opacity: 1; }
+            header, .hero, .card, .reviews, footer { animation: none; opacity: 1; }
             .logo:hover { transform: none; }
-        }
-
-        /* ---------- Адаптивность для мобильных ---------- */
-        @media (max-width: 600px) {
-            .loader-text {
-                font-size: 2.5rem;
-            }
-            .logo {
-                font-size: 2.8rem;
-            }
         }
     </style>
 </head>
 <body>
     <!-- Прелоадер -->
     <div id="preloader">
-        <div class="loader-text">
+        <div class="loader-text" id="loaderText">
             <span style="animation-delay: 0.1s;">@</span>
             <span style="animation-delay: 0.2s;">t</span>
             <span style="animation-delay: 0.3s;">h</span>
@@ -291,14 +442,14 @@
         </div>
     </div>
 
-    <!-- Кастомный курсор: точка и кольцо -->
+    <!-- Кастомный курсор -->
     <div class="cursor-dot" id="cursorDot"></div>
     <div class="cursor-outline" id="cursorOutline"></div>
 
     <!-- Основной контент -->
     <div class="container">
         <header>
-            <h1 class="logo">@theftfelt</h1>
+            <h1 class="logo" data-text="@theftfelt">@theftfelt</h1>
             <p class="subtitle">Минимализм и функциональность</p>
             <div class="theme-switcher">
                 <label for="theme-select">Тема:</label>
@@ -323,12 +474,29 @@
                 </div>
                 <div class="card scroll-reveal">
                     <h2>Проекты</h2>
-                    <p>Посмотри мои последние проекты и идеи.</p>
+                    <p>Создаю современные веб-приложения, ботов и интерфейсы.</p>
                 </div>
-                <div class="card scroll-reveal">
-                    <h2>Telegram-бот</h2>
-                    <p>@giftsnftrorobot — ваш помощник в мире NFT и подарков.</p>
-                    <a href="https://t.me/giftsnftrorobot" class="social-link" target="_blank">Открыть бота</a>
+            </section>
+
+            <!-- Отзывы -->
+            <section class="reviews scroll-reveal">
+                <h2>Отзывы</h2>
+                <div class="review-grid">
+                    <div class="review-card">
+                        <div class="review-stars">★★★★★</div>
+                        <p class="review-text">Отличный специалист! Всё сделал быстро и качественно.</p>
+                        <p class="review-author">Алексей</p>
+                    </div>
+                    <div class="review-card">
+                        <div class="review-stars">★★★★★</div>
+                        <p class="review-text">Очень доволен результатом. Рекомендую!</p>
+                        <p class="review-author">Мария</p>
+                    </div>
+                    <div class="review-card">
+                        <div class="review-stars">★★★★★</div>
+                        <p class="review-text">Превзошёл ожидания. Буду обращаться ещё.</p>
+                        <p class="review-author">Дмитрий</p>
+                    </div>
                 </div>
             </section>
         </main>
@@ -344,15 +512,18 @@
     <script src="script.js"></script>
     <script src="theme.js" defer></script>
     <script>
-        // ===== Скрываем прелоадер после полной загрузки страницы =====
+        // ===== Скрываем прелоадер после загрузки =====
         window.addEventListener('load', function() {
             const preloader = document.getElementById('preloader');
+            const loaderText = document.getElementById('loaderText');
+            // Добавляем класс complete для эффекта свечения букв
+            loaderText.classList.add('complete');
             setTimeout(() => {
                 preloader.classList.add('hidden');
-            }, 1200); // даём буквам доиграть
+            }, 1600); // даём больше времени для завершения анимации
         });
 
-        // ===== Инициализация Scroll Reveal (плавное появление при прокрутке) =====
+        // ===== Scroll Reveal =====
         document.addEventListener('DOMContentLoaded', function() {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -371,13 +542,11 @@
         (function() {
             const dot = document.getElementById('cursorDot');
             const outline = document.getElementById('cursorOutline');
-            if (!dot || !outline) return; // выход, если элементы не найдены
+            if (!dot || !outline) return;
 
-            let mouseX = -100, mouseY = -100;      // текущая позиция мыши (для точки)
-            let outlineX = -100, outlineY = -100;  // позиция кольца (для плавного следования)
-            let isHovering = false;                // флаг наведения на интерактивный элемент
+            let mouseX = -100, mouseY = -100;
+            let outlineX = -100, outlineY = -100;
 
-            // Обновление позиции точки мгновенно
             window.addEventListener('mousemove', (e) => {
                 mouseX = e.clientX;
                 mouseY = e.clientY;
@@ -385,9 +554,7 @@
                 dot.style.top = mouseY + 'px';
             });
 
-            // Плавное движение кольца через requestAnimationFrame
             function animateOutline() {
-                // Линейная интерполяция для плавности (коэффициент 0.15)
                 outlineX += (mouseX - outlineX) * 0.15;
                 outlineY += (mouseY - outlineY) * 0.15;
                 outline.style.left = outlineX + 'px';
@@ -396,20 +563,16 @@
             }
             animateOutline();
 
-            // Отслеживание наведения на интерактивные элементы
-            const interactiveElements = document.querySelectorAll('a, button, .card, .social-link, .md3-button');
+            const interactiveElements = document.querySelectorAll('a, button, .card, .social-link, .md3-button, .review-card');
             interactiveElements.forEach(el => {
                 el.addEventListener('mouseenter', () => {
-                    isHovering = true;
                     document.body.classList.add('cursor-hover');
                 });
                 el.addEventListener('mouseleave', () => {
-                    isHovering = false;
                     document.body.classList.remove('cursor-hover');
                 });
             });
 
-            // Скрываем курсор, когда мышь покидает окно
             document.addEventListener('mouseleave', () => {
                 dot.style.opacity = '0';
                 outline.style.opacity = '0';
