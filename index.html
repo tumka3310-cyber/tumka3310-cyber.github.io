@@ -3,197 +3,293 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#141218">
 <title>@theftfelt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#050505;--s:rgba(255,255,255,.06);--s2:rgba(255,255,255,.09);--t:#f5f5f5;--m:rgba(245,245,245,.7);--ac:#c9a46a;--aq:#7fd8e8;--r:24px}
-*{box-sizing:border-box}
-body{margin:0;min-height:100vh;background:radial-gradient(circle at top,rgba(143,124,255,.12),transparent 30%),radial-gradient(circle at bottom right,rgba(201,164,106,.1),transparent 28%),var(--bg);color:var(--t);font-family:Inter,system-ui,sans-serif;overflow-x:hidden}
-.shell{width:min(1100px,100%);margin:0 auto;padding:40px 20px}
-.badge{width:fit-content;padding:8px 14px;border-radius:99px;background:rgba(255,255,255,.08);color:var(--ac);border:1px solid rgba(255,255,255,.12);font-size:13px;text-transform:uppercase}
-h1{margin:12px 0;font-size:clamp(36px,7vw,64px);letter-spacing:-.04em;background:linear-gradient(120deg,#f5f5f5 30%,#c9a46a 70%,#8f7cff);-webkit-background-clip:text;background-clip:text;color:transparent}
-.sub{margin:0 0 24px;color:var(--m);line-height:1.7}
-.tabs{display:inline-flex;gap:6px;padding:6px;border-radius:99px;background:var(--s);border:1px solid rgba(255,255,255,.12);margin-bottom:22px}
-.tab{border:0;cursor:pointer;padding:10px 20px;border-radius:99px;background:0;color:var(--m);font:700 14px Inter,sans-serif;transition:.25s}
-.tab:hover{color:#fff}
-.tab.on{background:linear-gradient(120deg,rgba(201,164,106,.25),rgba(143,124,255,.2));color:#fff;box-shadow:inset 0 0 0 1px rgba(201,164,106,.4)}
-.panel{display:none}
-.panel.on{display:block;animation:pin .4s}
-@keyframes pin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-.card{border-radius:var(--r);background:linear-gradient(180deg,var(--s),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.12);text-decoration:none;color:inherit;overflow:hidden;transition:.25s;display:block}
-.card:hover{transform:translateY(-5px);border-color:rgba(201,164,106,.45);box-shadow:0 20px 50px rgba(0,0,0,.55)}
-.tw{position:relative;height:340px;background:radial-gradient(circle at center,rgba(255,255,255,.05),transparent 70%),#0d0d0d;display:grid;place-items:center}
-.fb{position:absolute;font-size:80px;opacity:.5}
-img.g{position:relative;width:100%;height:100%;object-fit:contain;padding:24px;filter:drop-shadow(0 20px 34px rgba(0,0,0,.5))}
-img.g.hid{visibility:hidden}
-.fl{position:absolute;inset:0;animation:lev 5s ease-in-out infinite}
+:root{
+  --surface:#141218; --sc:#211f26; --sch:#2b2930; --schst:#36343b;
+  --primary:#d0bcff; --on-primary:#381e72;
+  --pcontainer:#4f378b; --on-pcontainer:#eaddff;
+  --scontainer:#4a4458; --on-scontainer:#eaddff;
+  --on-surface:#e6e0e9; --on-sv:#cac4d0; --outline:#938f99; --ov:#49454f;
+  --rx:28px; --rl:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--surface);color:var(--on-surface);font:400 16px/1.5 Roboto,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
+img{display:block}
+.wrap{max-width:1080px;margin:0 auto;padding:16px}
+
+/* ===== RIPPLE (MD3 state layer) ===== */
+.rp{position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent}
+.rip{position:absolute;border-radius:50%;background:currentColor;opacity:.15;transform:scale(0);animation:rip .55s ease-out forwards;pointer-events:none}
+@keyframes rip{to{transform:scale(1);opacity:0}}
+
+/* ===== APP BAR ===== */
+.bar{position:sticky;top:12px;z-index:50;background:var(--sc);border-radius:24px;padding:12px 16px;display:flex;align-items:center;gap:14px;margin-bottom:16px;box-shadow:0 2px 6px rgba(0,0,0,.35)}
+.logo{width:46px;height:46px;border-radius:14px;background:var(--pcontainer);display:grid;place-items:center;flex-shrink:0}
+.logo svg{width:24px;height:24px;fill:var(--on-pcontainer)}
+.brand{font-weight:900;font-size:17px;letter-spacing:.12em;color:var(--on-sv);margin-right:auto}
+.tabs{display:flex;gap:4px}
+.tab{display:flex;align-items:center;gap:8px;padding:11px 18px;border-radius:999px;color:var(--on-sv);font-weight:500;font-size:15px;transition:background .2s,color .2s;white-space:nowrap}
+.tab svg{width:20px;height:20px;fill:currentColor}
+.tab:hover{background:rgba(255,255,255,.06)}
+.tab.on{background:var(--scontainer);color:var(--on-scontainer)}
+
+/* ===== PANELS ===== */
+.panel{display:none;animation:up .35s cubic-bezier(.2,.7,.3,1)}
+.panel.on{display:block}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ===== HERO ===== */
+.hero{position:relative;overflow:hidden;border-radius:var(--rx);padding:56px 36px 40px;background:linear-gradient(125deg,#9a7fd6 0%,#6750a4 50%,#4a3577 100%);margin-bottom:14px}
+.hero .star{position:absolute;right:-70px;top:-90px;width:480px;height:480px;fill:rgba(255,255,255,.14);pointer-events:none}
+.hero h1{position:relative;font-size:clamp(44px,9vw,86px);font-weight:900;letter-spacing:-.03em;color:#f3edf7;line-height:1.02;margin:120px 0 18px}
+.hero .sub{position:relative;color:rgba(243,237,247,.85);font-size:19px;font-weight:500}
+.ava{position:absolute;top:26px;right:26px;width:104px;height:104px;border-radius:50%;overflow:hidden;background:#241a3f;display:grid;place-items:center;font-size:40px;font-weight:900;color:var(--on-pcontainer);border:3px solid rgba(255,255,255,.3)}
+.ava img{width:100%;height:100%;object-fit:cover}
+
+/* ===== SOCIAL ===== */
+.social{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:36px}
+.sbtn{display:flex;align-items:center;justify-content:center;gap:12px;padding:17px;border-radius:999px;background:var(--sch);color:var(--on-surface);font-weight:700;font-size:16px;transition:background .2s,transform .15s}
+.sbtn:hover{background:var(--schst)}
+.sbtn:active{transform:scale(.98)}
+.sbtn .ic{width:30px;height:30px;border-radius:50%;background:var(--scontainer);display:grid;place-items:center;flex-shrink:0}
+.sbtn .ic svg{width:17px;height:17px;fill:var(--on-scontainer)}
+
+/* ===== SECTION HEAD ===== */
+.shead{display:flex;align-items:center;gap:16px;margin:8px 0 20px}
+.shead .sq{width:50px;height:50px;border-radius:14px;background:var(--pcontainer);display:grid;place-items:center;flex-shrink:0}
+.shead .sq svg{width:24px;height:24px;fill:var(--on-pcontainer)}
+.shead h2{font-size:24px;font-weight:700;letter-spacing:-.01em}
+
+/* ===== GIFT CARDS ===== */
+.ggrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:36px}
+.gcard{border-radius:var(--rx);background:var(--sc);overflow:hidden;display:flex;flex-direction:column;box-shadow:0 2px 6px rgba(0,0,0,.3);transition:transform .2s,box-shadow .2s}
+.gcard:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.45)}
+.gmedia{position:relative;height:300px;background:radial-gradient(circle at center,rgba(255,255,255,.05),transparent 70%),#0d0c0f;display:grid;place-items:center}
+.gmedia .fb{position:absolute;font-size:76px;opacity:.5}
+.gmedia .lev{position:absolute;inset:0;animation:lev 5s ease-in-out infinite}
 @keyframes lev{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-.cnt{padding:18px;display:flex;flex-direction:column;gap:8px}
-.nm{font-size:21px;font-weight:800}
-.nm i{color:var(--m);font-style:normal;font-weight:600}
-.mt{color:var(--m);font-size:14px}
-.mt b{color:var(--ac)}
-.ds{margin:0;color:var(--m);font-size:14px;line-height:1.6}
-/* профили */
-.pwrap{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
-.pc{border-radius:var(--r);background:linear-gradient(180deg,var(--s),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.12);padding:28px;display:flex;flex-direction:column;gap:16px}
-.ph{display:flex;align-items:center;gap:16px}
-.av{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;font-size:30px;font-weight:800;color:#050505;background:conic-gradient(from 200deg,#f0d9a8,#c9a46a,#8f7cff,#7fd8e8,#f0d9a8);flex-shrink:0;animation:gl 4s ease-in-out infinite}
-@keyframes gl{0%,100%{box-shadow:0 0 0 3px rgba(255,255,255,.08),0 10px 26px rgba(201,164,106,.25)}50%{box-shadow:0 0 0 3px rgba(255,255,255,.12),0 10px 40px rgba(143,124,255,.35)}}
-.pn{margin:0;font-size:26px;font-weight:800}
-.lnk{color:var(--aq);text-decoration:none;font-weight:700;border-bottom:1px dashed rgba(127,216,232,.4)}
-.lnk:hover{text-shadow:0 0 12px rgba(127,216,232,.6)}
-.ab{margin:0;color:var(--m);line-height:1.75;white-space:pre-line;font-size:15px}
-.st{display:flex;gap:8px;flex-wrap:wrap}
-.st span{padding:7px 12px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);font-size:13px;color:var(--m)}
-.st b{color:var(--ac)}
-.bt{display:inline-flex;align-items:center;gap:9px;padding:12px 20px;border-radius:99px;background:linear-gradient(120deg,#2aabee,#1c7fd6);color:#fff;text-decoration:none;font-weight:700;font-size:14px;box-shadow:0 8px 24px rgba(42,171,238,.35);transition:.25s;width:fit-content}
-.bt:hover{transform:translateY(-3px)}
-.bt2{border:1px solid rgba(255,255,255,.14);background:var(--s);color:var(--t);cursor:pointer;font:700 14px Inter,sans-serif}
-.sc{border-radius:var(--r);background:linear-gradient(180deg,var(--s),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.12);padding:20px;display:flex;flex-direction:column;gap:12px}
-.sc h3{margin:0;font-size:16px}
-.sc p{margin:0;color:var(--m);font-size:14px;line-height:1.7}
-#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(16px);padding:11px 18px;border-radius:99px;background:rgba(20,20,20,.95);border:1px solid rgba(201,164,106,.5);color:var(--ac);font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:.3s}
+.gmedia img{width:100%;height:100%;object-fit:contain;padding:24px;filter:drop-shadow(0 18px 30px rgba(0,0,0,.5))}
+.gmedia img.hid{visibility:hidden}
+.gbody{padding:18px 20px 20px;display:flex;flex-direction:column;gap:6px;flex:1}
+.gbody h3{font-size:21px;font-weight:700}
+.gbody .gmeta{color:var(--on-sv);font-size:14px;font-weight:500}
+.gbody .gmeta b{color:var(--primary);font-weight:700}
+.gbody p{color:var(--on-sv);font-size:14px;line-height:1.6;margin-top:4px}
+.gact{margin-top:14px}
+.tbtn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;background:var(--pcontainer);color:var(--on-pcontainer);font-weight:700;font-size:14px;transition:filter .2s}
+.tbtn:hover{filter:brightness(1.15)}
+
+/* ===== QUOTE ===== */
+.quote{background:var(--sc);border-radius:var(--rx);padding:30px 32px 34px;margin-bottom:36px}
+.quote blockquote{font-size:clamp(22px,4vw,30px);font-weight:500;line-height:1.35;color:var(--on-surface);margin:18px 0 16px}
+.quote cite{font-style:normal;color:var(--on-sv);font-size:16px}
+
+/* ===== ABOUT ===== */
+.acard{background:var(--sc);border-radius:var(--rx);padding:30px;margin-bottom:14px}
+.arow{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:18px}
+.aava{width:84px;height:84px;border-radius:50%;overflow:hidden;background:var(--pcontainer);display:grid;place-items:center;font-size:34px;font-weight:900;color:var(--on-pcontainer);flex-shrink:0}
+.aava img{width:100%;height:100%;object-fit:cover}
+.aname{font-size:26px;font-weight:900;letter-spacing:-.01em}
+.ahandle{color:var(--primary);font-weight:700;width:fit-content;border-bottom:1px solid var(--ov);transition:border-color .2s}
+.ahandle:hover{border-color:var(--primary)}
+.atext{color:var(--on-sv);line-height:1.75;white-space:pre-line;margin-bottom:18px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.chip{padding:8px 14px;border-radius:10px;border:1px solid var(--ov);color:var(--on-sv);font-size:13px;font-weight:500}
+.chip b{color:var(--primary);font-weight:700}
+.acts{display:flex;gap:10px;flex-wrap:wrap}
+.fbtn{display:inline-flex;align-items:center;gap:9px;padding:13px 24px;border-radius:999px;background:var(--primary);color:var(--on-primary);font-weight:700;font-size:15px;transition:filter .2s,transform .15s}
+.fbtn:hover{filter:brightness(1.08)}
+.fbtn:active{transform:scale(.97)}
+.obtn{background:none;border:1px solid var(--outline);color:var(--primary)}
+.obtn:hover{background:rgba(208,188,255,.08);filter:none}
+
+/* ===== FOOTER ===== */
+.foot{font-family:ui-monospace,Consolas,monospace;text-align:center;color:var(--on-sv);font-size:14px;letter-spacing:.06em;padding:34px 0 22px;opacity:.8}
+
+/* ===== TOAST ===== */
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(16px);padding:12px 22px;border-radius:12px;background:var(--schst);color:var(--on-surface);font-size:14px;font-weight:500;opacity:0;pointer-events:none;transition:.3s;z-index:99;box-shadow:0 6px 20px rgba(0,0,0,.5)}
 #toast.sh{opacity:1;transform:translateX(-50%)}
-/* пещерная заставка */
-#pre{position:fixed;inset:0;z-index:99;background:radial-gradient(ellipse at 50% 60%,#1c1209,#0d0806 45%,#030202);display:grid;place-items:center;transition:opacity .6s ease .8s}
+
+/* ===== PRELOADER ===== */
+#pre{position:fixed;inset:0;z-index:100;background:var(--surface);display:grid;place-items:center;transition:opacity .45s}
 #pre.off{opacity:0;pointer-events:none}
-.glo{position:absolute;left:50%;top:56%;width:460px;height:460px;margin:-230px 0 0 -230px;border-radius:50%;background:radial-gradient(circle,rgba(127,216,232,.18),transparent 55%),radial-gradient(circle,rgba(201,164,106,.12),transparent 70%);filter:blur(8px);animation:fl2 2.4s linear infinite}
-@keyframes fl2{0%,100%{opacity:.75}22%{opacity:1}47%{opacity:.7}70%{opacity:.95}}
-.in{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:18px}
-.cl{width:150px;height:140px;filter:drop-shadow(0 0 16px rgba(127,216,232,.35))}
-.cr{transform-origin:50% 100%;transform:scaleY(0);opacity:0;animation:gw .8s cubic-bezier(.2,.7,.3,1) forwards;animation-delay:calc(.2s + var(--i)*.16s)}
-@keyframes gw{0%{transform:scaleY(0);opacity:0}60%{transform:scaleY(1.08);opacity:1}100%{transform:scaleY(1);opacity:1}}
-.lg{font-size:clamp(28px,6vw,42px);font-weight:800;background:linear-gradient(100deg,#f5e7c8,#c9a46a 40%,#bfefff 75%,#7fd8e8);-webkit-background-clip:text;background-clip:text;color:transparent}
-.lg span{display:inline-block;opacity:0;animation:lr .8s forwards;animation-delay:calc(1s + var(--i)*.05s)}
-@keyframes lr{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-.cap{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--m);opacity:0;animation:fu .6s 1.5s forwards}
-@keyframes fu{to{opacity:.9}}
-.br{width:170px;height:2px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}
-.br i{display:block;height:100%;background:linear-gradient(90deg,#7fd8e8,#c9a46a);transform-origin:left;animation:bf 1.4s .8s cubic-bezier(.4,0,.2,1) forwards;transform:scaleX(0)}
-@keyframes bf{to{transform:scaleX(1)}}
-@media(max-width:800px){.grid,.pwrap{grid-template-columns:1fr}.tw{height:300px}}
+#pre .pl{display:flex;flex-direction:column;align-items:center;gap:20px}
+#pre .sp{width:52px;height:52px;border-radius:50%;border:4px solid var(--ov);border-top-color:var(--primary);animation:spin 1s linear infinite}
+#pre .pt{font-weight:900;letter-spacing:.14em;color:var(--on-sv);font-size:14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:760px){
+  .ggrid,.social{grid-template-columns:1fr}
+  .hero{padding:40px 24px 32px}
+  .hero h1{margin-top:110px}
+  .ava{width:84px;height:84px;font-size:32px}
+  .bar{flex-wrap:wrap}
+  .brand{margin-right:0;width:100%;order:-1;display:flex;align-items:center;gap:12px}
+  .tabs{width:100%;overflow-x:auto}
+  .quote{padding:24px 22px 28px}
+}
 </style>
 </head>
 <body>
 
-<!-- заставка -->
-<div id="pre">
-  <div class="glo"></div>
-  <div class="in">
-    <svg class="cl" viewBox="0 0 170 160" fill="none">
-      <defs>
-        <linearGradient id="a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8f6ff"/><stop offset="1" stop-color="#2a6b80"/></linearGradient>
-        <linearGradient id="b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0d9a8"/><stop offset="1" stop-color="#8a6a3a"/></linearGradient>
-        <linearGradient id="c" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cdbcff"/><stop offset="1" stop-color="#5a4a9a"/></linearGradient>
-      </defs>
-      <polygon class="cr" style="--i:0" points="52,160 58,110 70,88 82,112 86,160" fill="url(#b)"/>
-      <polygon class="cr" style="--i:1" points="104,160 108,116 120,92 132,118 136,160" fill="url(#c)"/>
-      <polygon class="cr" style="--i:2" points="70,160 76,92 85,42 94,90 100,160" fill="url(#a)"/>
-      <polygon class="cr" style="--i:3" points="96,160 100,108 109,72 118,110 122,160" fill="url(#a)"/>
-    </svg>
-    <div class="lg"><span style="--i:0">@</span><span style="--i:1">t</span><span style="--i:2">h</span><span style="--i:3">e</span><span style="--i:4">f</span><span style="--i:5">t</span><span style="--i:6">f</span><span style="--i:7">e</span><span style="--i:8">l</span><span style="--i:9">t</span></div>
-    <div class="cap">Premium NFT Gifts</div>
-    <div class="br"><i></i></div>
-  </div>
-</div>
+<div id="pre"><div class="pl"><div class="sp"></div><div class="pt">THEFTFELT</div></div></div>
 
-<main class="shell">
-  <div class="badge">Premium NFT Gifts</div>
-  <h1>@theftfelt</h1>
-  <p class="sub">Коллекция NFT-подарков Telegram и немного обо мне.</p>
+<div class="wrap">
 
-  <div class="tabs">
-    <button class="tab on" data-p="gifts">🎁 Gifts</button>
-    <button class="tab" data-p="profiles">👤 Profiles</button>
-  </div>
+  <!-- APP BAR -->
+  <header class="bar">
+    <div class="logo"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/></svg></div>
+    <span class="brand">THEFTFELT</span>
+    <nav class="tabs">
+      <button class="tab rp on" data-p="main"><svg viewBox="0 0 24 24"><path d="M4 21V9l8-6 8 6v12h-6v-7h-4v7z"/></svg>Main</button>
+      <button class="tab rp" data-p="gifts"><svg viewBox="0 0 24 24"><path d="M20 6h-2.2c.1-.3.2-.7.2-1 0-1.7-1.3-3-3-3-1.1 0-2 .5-2.5 1.3l-.5.7-.5-.7C11 2.5 10.1 2 9 6 7.3 2 6 3.3 6 5c0 .3.1.7.2 1H4c-1.1 0-2 .9-2 2v3h9V6h2v5h9V8c0-1.1-.9-2-2-2zM9 5c.6 0 1 .4 1 1s-.4 1-1 1-1-.4-1-1 .4-1 1-1zm6 0c.6 0 1 .4 1 1s-.4 1-1 1-1-.4-1-1 .4-1 1-1zM2 13v7c0 1.1.9 2 2 2h7v-9zm11 9h7c1.1 0 2-.9 2-2v-7h-9z"/></svg>Gifts</button>
+      <button class="tab rp" data-p="about"><svg viewBox="0 0 24 24"><path d="M12 12c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm0 2c-2.7 0-8 1.3-8 4v2h16v-2c0-2.7-5.3-4-8-4z"/></svg>About me</button>
+    </nav>
+  </header>
 
-  <!-- GIFTS -->
-  <div class="panel on" id="p-gifts">
-    <div class="grid">
-      <a class="card" href="https://t.me/nft/ChillFlame-436098" target="_blank" rel="noopener">
-        <div class="tw"><div class="fb">🔥</div><div class="fl"><img class="g hid" src="images/chill-flame.png" alt="Chill Flame" onload="this.classList.remove('hid')" onerror="this.remove()"></div></div>
-        <div class="cnt">
-          <div class="nm">Chill Flame <i>#436,098</i></div>
-          <div class="mt"><b>The Match</b> • Telegram gift</div>
-          <p class="ds">Яркий подарок из коллекции The Match с горящим пламенем.</p>
+  <!-- ===== MAIN ===== -->
+  <section class="panel on" id="p-main">
+    <div class="hero">
+      <svg class="star" viewBox="0 0 24 24"><path d="M12 1l2.9 8.1L23 12l-8.1 2.9L12 23l-2.9-8.1L1 12l8.1-2.9z"/></svg>
+      <div class="ava">T</div>
+      <h1>Hi, I'm theftfelt</h1>
+      <div class="sub">theftfelt · Telegram NFT gifts</div>
+    </div>
+
+    <div class="social">
+      <a class="sbtn rp" href="https://t.me/theftfelt" target="_blank" rel="noopener">
+        <span class="ic"><svg viewBox="0 0 24 24"><path d="M9.04 15.51 8.9 19.1c.39 0 .56-.17.77-.37l1.85-1.77 3.83 2.8c.7.39 1.2.19 1.39-.65l2.52-11.82c.22-1.04-.38-1.45-1.06-1.2L3.36 11.6c-1.01.39-1 .95-.17 1.2l3.67 1.15 8.53-5.38c.4-.26.77-.12.47.15l-6.82 6.79Z"/></svg></span>
+        Telegram
+      </a>
+      <a class="sbtn rp" href="https://github.com/tumka3310-cyber" target="_blank" rel="noopener">
+        <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-.88-.01-1.73-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.5-1.11-1.5-.91-.63.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.35 1.12 2.92.85.09-.66.35-1.12.63-1.37-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.28 2.75 1.05a9.36 9.36 0 0 1 5 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.4.2 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.8-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.6.69.49A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2z"/></svg></span>
+        GitHub
+      </a>
+    </div>
+
+    <div class="shead">
+      <span class="sq"><svg viewBox="0 0 24 24"><path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/></svg></span>
+      <h2>Quote</h2>
+    </div>
+    <div class="quote">
+      <blockquote>«Many perish while trying to destroy others.»</blockquote>
+      <cite>— Thomas More</cite>
+    </div>
+
+    <div class="foot">t.me/theftfelt · nft gifts collector</div>
+  </section>
+
+  <!-- ===== GIFTS ===== -->
+  <section class="panel" id="p-gifts">
+    <div class="shead">
+      <span class="sq"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/></svg></span>
+      <h2>My gifts</h2>
+    </div>
+
+    <div class="ggrid">
+      <a class="gcard rp" href="https://t.me/nft/ChillFlame-436098" target="_blank" rel="noopener">
+        <div class="gmedia">
+          <span class="fb">🔥</span>
+          <div class="lev"><img src="images/chill-flame.png" alt="Chill Flame" loading="lazy" onload="this.classList.remove('hid')" onerror="this.remove()"></div>
+        </div>
+        <div class="gbody">
+          <h3>Chill Flame</h3>
+          <div class="gmeta"><b>The Match</b> · #436,098</div>
+          <p>Яркий подарок из коллекции The Match с горящим пламенем.</p>
+          <div class="gact"><span class="tbtn">Открыть ↗</span></div>
         </div>
       </a>
-      <a class="card" href="https://t.me/nft/MoodPack-36867" target="_blank" rel="noopener">
-        <div class="tw"><div class="fb">🎒</div><div class="fl"><img class="g hid" src="images/mood-pack.png" alt="Mood Pack" onload="this.classList.remove('hid')" onerror="this.remove()"></div></div>
-        <div class="cnt">
-          <div class="nm">Mood Pack <i>#36,867</i></div>
-          <div class="mt"><b>Jolly Roger</b> • Limited drop</div>
-          <p class="ds">Стильный рюкзак с черепом из редкой модели Jolly Roger.</p>
+
+      <a class="gcard rp" href="https://t.me/nft/MoodPack-36867" target="_blank" rel="noopener">
+        <div class="gmedia">
+          <span class="fb">🎒</span>
+          <div class="lev"><img src="images/mood-pack.png" alt="Mood Pack" loading="lazy" onload="this.classList.remove('hid')" onerror="this.remove()"></div>
+        </div>
+        <div class="gbody">
+          <h3>Mood Pack</h3>
+          <div class="gmeta"><b>Jolly Roger</b> · #36,867</div>
+          <p>Стильный рюкзак с черепом из редкой модели Jolly Roger.</p>
+          <div class="gact"><span class="tbtn">Открыть ↗</span></div>
         </div>
       </a>
     </div>
-  </div>
 
-  <!-- PROFILES -->
-  <div class="panel" id="p-profiles">
-    <div class="pwrap">
-      <div class="pc">
-        <div class="ph">
-          <div class="av">T</div>
-          <div>
-            <h2 class="pn">theftfelt</h2>
-            <a class="lnk" href="https://t.me/theftfelt" target="_blank" rel="noopener">@theftfelt</a>
-          </div>
+    <div class="foot">buy · sell · trade → t.me/theftfelt</div>
+  </section>
+
+  <!-- ===== ABOUT ===== -->
+  <section class="panel" id="p-about">
+    <div class="acard">
+      <div class="arow">
+        <div class="aava">T</div>
+        <div>
+          <div class="aname">theftfelt</div>
+          <a class="ahandle" href="https://t.me/theftfelt" target="_blank" rel="noopener">@theftfelt</a>
         </div>
-        <p class="ab">Собираю NFT-подарки Telegram.
+      </div>
+
+      <p class="atext">Собираю NFT-подарки Telegram.
 Люблю редкие дропы и минимализм.
 По всем вопросам — пиши в Telegram, всегда на связи.</p>
-        <div class="st">
-          <span>NFT: <b>2</b></span>
-          <span>Статус: <b>Коллекционер</b></span>
-          <span>На связи: <b>24/7</b></span>
-        </div>
-        <a class="bt" href="https://t.me/theftfelt" target="_blank" rel="noopener">✈️ Написать в Telegram</a>
-        <button class="bt bt2" id="cp">📋 Скопировать ник</button>
+
+      <div class="chips">
+        <span class="chip">NFT: <b>2</b></span>
+        <span class="chip">Статус: <b>Коллекционер</b></span>
+        <span class="chip">На связи: <b>24/7</b></span>
       </div>
-      <div class="sc">
-        <h3>Обо мне</h3>
-        <p>Коллекционер Telegram Gifts. Здесь выставляю свои NFT — от редких моделей до легендарных дропов. Открыт к обмену и продаже.</p>
-        <h3>Связь</h3>
-        <a class="lnk" href="https://t.me/theftfelt" target="_blank" rel="noopener">t.me/theftfelt</a>
+
+      <div class="acts">
+        <a class="fbtn rp" href="https://t.me/theftfelt" target="_blank" rel="noopener">✈️ Написать в Telegram</a>
+        <button class="fbtn obtn rp" id="cp">📋 Скопировать ник</button>
       </div>
     </div>
-  </div>
-</main>
+    <div class="foot">t.me/theftfelt</div>
+  </section>
+
+</div>
 
 <div id="toast">Ник скопирован ✓</div>
 
-<noscript><style>#pre{display:none}</style></noscript>
+<noscript><style>#pre{display:none}.panel{display:block}.tab:not(.on){display:none}</style></noscript>
 
 <script>
-// заставка
-var MIN=2600,t0=Date.now(),done=false,pre=document.getElementById('pre');
-function go(){
-  if(done)return;done=true;
-  setTimeout(function(){
-    pre.classList.add('off');pre.remove&&setTimeout(function(){pre.remove()},1400);
-  },Math.max(0,MIN-(Date.now()-t0)));
-}
-setTimeout(go,4000); // защита: максимум 4 сек
-window.addEventListener('load',go);
+/* preloader */
+var pre=document.getElementById('pre'),t0=Date.now(),off=false;
+function go(){if(off)return;off=true;
+  setTimeout(function(){pre.classList.add('off');setTimeout(function(){pre.remove()},500)},Math.max(0,800-(Date.now()-t0)))}
+setTimeout(go,3500);window.addEventListener('load',go);
 
-// вкладки
+/* tabs */
 document.querySelectorAll('.tab').forEach(function(b){
   b.onclick=function(){
     document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});
     document.querySelectorAll('.panel').forEach(function(x){x.classList.remove('on')});
     b.classList.add('on');
     document.getElementById('p-'+b.dataset.p).classList.add('on');
-  };
+  }});
+
+/* ripple */
+document.addEventListener('pointerdown',function(e){
+  var t=e.target.closest('.rp');if(!t)return;
+  var r=t.getBoundingClientRect(),d=Math.max(r.width,r.height)*1.15,s=document.createElement('span');
+  s.className='rip';s.style.width=s.style.height=d+'px';
+  s.style.left=(e.clientX-r.left-d/2)+'px';s.style.top=(e.clientY-r.top-d/2)+'px';
+  t.appendChild(s);setTimeout(function(){s.remove()},600);
 });
 
-// копирование ника
+/* copy nick */
 document.getElementById('cp').onclick=function(){
   var tg=document.getElementById('toast');
   (navigator.clipboard?navigator.clipboard.writeText('@theftfelt'):Promise.reject()).catch(function(){
-    var ta=document.createElement('textarea');ta.value='@theftfelt';document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();
-  });
+    var ta=document.createElement('textarea');ta.value='@theftfelt';document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()});
   tg.classList.add('sh');setTimeout(function(){tg.classList.remove('sh')},1600);
 };
 </script>
