@@ -51,6 +51,61 @@
       opacity: 0.25;
     }
 
+    /* ===== ПРЕЛОАДЕР ===== */
+    #preloader {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+
+    #preloader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .loader-gift {
+      font-size: 72px;
+      animation: giftFloat 1.4s ease-in-out infinite;
+      filter: drop-shadow(0 10px 30px rgba(201, 164, 106, 0.35));
+    }
+
+    @keyframes giftFloat {
+      0%, 100% { transform: translateY(0) rotate(-4deg); }
+      50%      { transform: translateY(-14px) rotate(4deg); }
+    }
+
+    .loader-ring {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: 3px solid rgba(255, 255, 255, 0.08);
+      border-top-color: var(--accent);
+      animation: spin 0.9s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loader-text {
+      font-size: 13px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; }
+      50%      { opacity: 1; }
+    }
+
+    /* ===== СТРАНИЦА ===== */
     .page {
       min-height: 100vh;
       padding: 24px;
@@ -111,23 +166,42 @@
       box-shadow: var(--shadow);
       text-decoration: none;
       color: inherit;
-      min-height: 340px;
       display: flex;
       flex-direction: column;
-      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+
+      /* Плавное появление после загрузки */
+      opacity: 0;
+      transform: translateY(30px);
+      transition:
+        opacity 0.7s ease,
+        transform 0.7s ease,
+        border-color 0.2s ease,
+        background 0.2s ease;
     }
 
-    .gift-card:hover {
+    body.loaded .gift-card {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    body.loaded .gift-card:nth-child(1) { transition-delay: 0.1s, 0.1s, 0s, 0s; }
+    body.loaded .gift-card:nth-child(2) { transition-delay: 0.25s, 0.25s, 0s, 0s; }
+
+    body.loaded .gift-card:hover {
       transform: translateY(-4px);
       border-color: rgba(255,255,255,0.22);
       background: linear-gradient(180deg, var(--surface-2), rgba(255,255,255,0.05));
+      transition-delay: 0s;
     }
 
+    /* ===== КАРТИНКА: БОЛЬШЕ И ЦЕЛИКОМ ===== */
     .thumb-wrap {
       position: relative;
-      height: 210px;
+      height: 360px;               /* было 210 — теперь почти квадрат, влезает целиком */
       width: 100%;
-      background: #0d0d0d;
+      background:
+        radial-gradient(circle at center, rgba(255,255,255,0.05), transparent 70%),
+        #0d0d0d;
       overflow: hidden;
     }
 
@@ -136,8 +210,8 @@
       inset: 0;
       display: grid;
       place-items: center;
-      font-size: 72px;
-      opacity: 0.55;
+      font-size: 90px;
+      opacity: 0.5;
     }
 
     .thumb {
@@ -145,8 +219,17 @@
       inset: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;         /* ← картинка целиком, без обрезки */
+      padding: 20px;
       display: block;
+      opacity: 0;
+      transform: scale(0.96);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .thumb.visible {
+      opacity: 1;
+      transform: scale(1);
     }
 
     .content {
@@ -215,12 +298,8 @@
         grid-template-columns: 1fr;
       }
 
-      .gift-card {
-        min-height: 320px;
-      }
-
       .thumb-wrap {
-        height: 200px;
+        height: 340px;
       }
     }
 
@@ -236,10 +315,22 @@
       h1 {
         font-size: clamp(34px, 11vw, 54px);
       }
+
+      .thumb-wrap {
+        height: 300px;
+      }
     }
   </style>
 </head>
 <body>
+
+  <!-- ===== ЭКРАН ЗАГРУЗКИ ===== -->
+  <div id="preloader">
+    <div class="loader-gift">🎁</div>
+    <div class="loader-ring"></div>
+    <div class="loader-text">Loading gifts</div>
+  </div>
+
   <main class="page">
     <section class="shell">
       <div class="hero">
@@ -299,5 +390,30 @@
       </div>
     </section>
   </main>
+
+  <script>
+    // Прелоадер: исчезает, когда страница готова
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('preloader').classList.add('hidden');
+        document.body.classList.add('loaded'); // запускает появление карточек
+
+        // Удаляем прелоадер из DOM после анимации
+        setTimeout(() => {
+          const p = document.getElementById('preloader');
+          if (p) p.remove();
+        }, 700);
+      }, 500);
+    });
+
+    // Плавное проявление картинок, когда каждая загрузилась
+    document.querySelectorAll('.thumb').forEach(img => {
+      if (img.complete && img.naturalWidth > 0) {
+        img.classList.add('visible');
+      } else {
+        img.addEventListener('load', () => img.classList.add('visible'));
+      }
+    });
+  </script>
 </body>
 </html>
