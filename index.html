@@ -668,4 +668,287 @@
   <!-- Без JS — показываем сайт сразу, без заставки -->
   <noscript>
     <style>
-      #preloader { d
+      #preloader { display: none !important; }
+      .reveal, .gift-card, .thumb { opacity: 1 !important; transform: none !important; }
+    </style>
+  </noscript>
+
+  <script>
+    (function () {
+      var pre = document.getElementById('preloader');
+      var start = Date.now();
+      var REDUCED = false;
+      try { REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+      var MIN = REDUCED ? 0 : 3000;   // длительность заставки
+      var called = false;
+      var exitStart = null;
+
+      /* === Открыть сайт (с защитой от повторов и ошибок) === */
+      function showSite() {
+        if (called) return;
+        called = true;
+        var wait = Math.max(0, MIN - (Date.now() - start));
+        setTimeout(function () {
+          try {
+            if (pre) pre.classList.add('done');
+            document.body.classList.add('loaded');
+            exitStart = performance.now(); // волны уходят в отлив
+            setTimeout(function () {
+              if (pre && pre.parentNode) pre.parentNode.removeChild(pre);
+            }, 1800);
+          } catch (e) {
+            if (pre && pre.parentNode) pre.parentNode.removeChild(pre);
+          }
+        }, wait);
+      }
+
+     /* === ЗАЩИТА №1: сайт откроется максимум через 5 секунд === */
+      setTimeout(showSite, 5000);
+
+      if (document.readyState === 'complete') showSite();
+      else window.addEventListener('load', showSite, { once: true });
+
+      /* === ОКЕАН НА CANVAS (защищён try/catch — не уронит загрузку) === */
+      try {
+        var canvas = document.getElementById('ocean');
+        if (canvas && canvas.getContext) {
+          var ctx = canvas.getContext('2d');
+          var W = 0, H = 0, horizon = 0;
+          var stars = [], bubbles = [], glints = [];
+          var gemStage = document.getElementById('gemStage');
+
+          var LAYERS = [
+            { base: 0.60, amp: 9,  k: 0.012, speed: 0.55, phase: 0.0, color: 'rgba(70,130,175,0.30)' },
+            { base: 0.66, amp: 13, k: 0.010, speed: 0.85, phase: 2.1, color: 'rgba(40,90,145,0.55)' },
+            { base: 0.74, amp: 17, k: 0.008, speed: 1.25, phase: 4.2, color: 'rgba(14,38,74,0.95)' }
+          ];
+          function init() {
+            W = canvas.width = innerWidth;
+            H = canvas.height = innerHeight;
+            horizon = H * 0.58;
+
+            stars = [];
+            for (var i = 0; i < 70; i++) {
+              stars.push({
+                x: Math.random() * W,
+                y: Math.random() * horizon * 0.9,
+                r: 0.4 + Math.random() * 1.2,
+                tw: Math.random() * Math.PI * 2,
+                ts: 0.4 + Math.random() * 1.2
+              });
+            }
+
+            bubbles = [];
+            for (var b = 0; b < 22; b++) bubbles.push(newBubble(true));
+
+            glints = [];
+            for (var g = 0; g < 34; g++) {
+              glints.push({
+                x: Math.random() * W,
+                y: horizon + 12 + Math.random() * (H - horizon - 30),
+                s: 2 + Math.random() * 4,
+                ph: Math.random() * Math.PI * 2
+              });
+              
+          }
+
+          function newBubble(anywhere) {
+            return {
+              x: Math.random() * W,
+              y: anywhere ? horizon + Math.random() * (H - horizon) : H + 10,
+              r: 1 + Math.random() * 2.6,
+              v: 0.35 + Math.random() * 0.8,
+              wob: Math.random() * Math.PI * 2
+            };
+          }
+
+          function waveY(x, L, t) {
+            return H * L.base
+              + Math.sin(x * L.k + t * L.speed + L.phase) * L.amp
+              + Math.sin(x * L.k * 2.3 - t * L.speed * 1.4) * L.amp * 0.35;
+          }
+
+          function drawLayer(L, t) {
+            ctx.beginPath();
+            ctx.moveTo(-10, H + 10);
+            var step = 8;
+            for (var x = -10; x <= W + 10; x += step) {
+              ctx.lineTo(x, waveY(x, L, t));
+            }
+            ctx.lineTo(W + 10, H + 10);
+            ctx.closePath();
+            ctx.fillStyle = L.color;
+            ctx.fill();
+          )
+
+    function drawCrest(L, t) {
+            ctx.beginPath();
+            for (var x = -10; x <= W + 10; x += 8) {
+              var y = waveY(x, L, t);
+              if (x === -10) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            }
+            ctx.strokeStyle = 'rgba(127,216,232,' + (0.22 + 0.1 * Math.sin(t * 2)).toFixed(3) + ')';
+            ctx.lineWidth = 1.2;
+            ctx.stroke();
+          }
+
+          var raf = null;
+
+          function tick(now) {
+            var t = now / 1000;
+
+            /* отлив: волны уходят вниз и гаснут */
+            var e = 0;
+            if (exitStart !== null) {
+              e = Math.min(1, (now - exitStart) / 900);
+            }
+
+            ctx.clearRect(0, 0, W, H);
+            ctx.save();
+            ctx.translate(0, e * e * 260);
+            ctx.globalAlpha = 1 - e;
+
+            /* звёзды */
+            for (var i = 0; i < stars.length; i++) {
+              var s = stars[i];
+              var a = 0.25 + 0.55 * Math.abs(Math.sin(t * s.ts + s.tw));
+              ctx.beginPath();
+              ctx.arc(s.x, s.y, s.r, 0, 6.283);
+              ctx.fillStyle = 'rgba(220,235,255,' + a.toFixed(3) + ')';
+              ctx.fill();
+            }
+
+            /* луна + сияние */
+            var mx = W * 0.78, my = H * 0.20, mr = 24;
+            var mglow = ctx.createRadialGradient(mx, my, mr * 0.4, mx, my, mr * 5);
+            mglow.addColorStop(0, 'rgba(240,225,190,0.30)');
+            mglow.addColorStop(1, 'rgba(240,225,190,0)');
+            ctx.fillStyle = mglow;
+            ctx.fillRect(mx - mr * 5, my - mr * 5, mr * 10, mr * 10);
+            ctx.beginPath();
+            ctx.arc(mx, my, mr, 0, 6.283);
+            ctx.fillStyle = '#f2e4c4';
+            ctx.fill();
+            /* лёгкая «дымка» на луне */
+            ctx.beginPath();
+            ctx.arc(mx - mr * 0.25, my - mr * 0.15, mr * 0.85, 0, 6.283);
+            ctx.fillStyle = 'rgba(255,255,255,0.25)';
+            ctx.fill();
+
+            /* сияние на горизонте */
+            var hglow = ctx.createRadialGradient(W / 2, horizon, 10, W / 2, horizon, W * 0.55);
+            hglow.addColorStop(0, 'rgba(127,216,232,0.14)');
+            hglow.addColorStop(1, 'rgba(127,216,232,0)');
+            ctx.fillStyle = hglow;
+            ctx.fillRect(0, horizon - 120, W, 240);
+
+            /* дорожка луны на воде */
+            for (var d = 0; d < 13; d++) {
+              var dy = horizon + 10 + d * 13;
+              var dx = mx + Math.sin(t * 1.6 + d * 0.9) * (8 + d * 1.2);
+              var rx = (58 - d * 3.6);
+              if (rx <= 4) break;
+              ctx.beginPath();
+              ctx.ellipse(dx, dy, rx, 2, 0, 0, 6.283);
+              ctx.fillStyle = 'rgba(240,225,190,' + (0.13 * (1 - d / 13)).toFixed(3) + ')';
+              ctx.fill();
+            }
+
+            /* волны: задние → передние */
+            drawLayer(LAYERS[0], t);
+            drawLayer(LAYERS[1], t);
+            drawLayer(LAYERS[2], t);
+            drawCrest(LAYERS[2], t);
+
+            /* золотое свечение кристалла на воде */
+            var gx = W / 2;
+            var gy = horizon + 34;
+            var gg = ctx.createRadialGradient(gx, gy, 4, gx, gy, 90);
+            var gA = 0.10 + 0.05 * Math.sin(t * 1.3);
+            gg.addColorStop(0, 'rgba(201,164,106,' + gA.toFixed(3) + ')');
+            gg.addColorStop(1, 'rgba(201,164,106,0)');
+            ctx.fillStyle = gg;
+            ctx.fillRect(gx - 100, gy - 60, 200, 140);
+
+            /* блики на воде */
+            for (var g2 = 0; g2 < glints.length; g2++) {
+              var gl = glints[g2];
+              var ga = Math.max(0, Math.sin(t * 2 + gl.ph));
+              ga = ga * ga * ga * 0.7;
+              if (ga > 0.02) {
+                ctx.beginPath();
+                ctx.ellipse(gl.x, gl.y, gl.s * 2.2, 0.9, 0, 0, 6.283);
+                ctx.fillStyle = 'rgba(200,235,255,' + ga.toFixed(3) + ')';
+                ctx.fill();
+              }
+            }
+            /* пузырьки */
+            for (var b2 = 0; b2 < bubbles.length; b2++) {
+              var bu = bubbles[b2];
+              bu.y -= bu.v;
+              bu.wob += 0.03;
+              var bx = bu.x + Math.sin(bu.wob) * 6;
+              if (bu.y < horizon + 16) bubbles[b2] = newBubble(false);
+              ctx.beginPath();
+              ctx.arc(bx, bu.y, bu.r, 0, 6.283);
+              ctx.strokeStyle = 'rgba(180,220,255,0.35)';
+              ctx.lineWidth = 1;
+              ctx.stroke();
+            }
+
+            ctx.restore();
+
+            /* кристалл покачивается на волне */
+            if (gemStage && e < 1) {
+              var bobY = Math.sin(t * 1.15) * 8;
+              var tilt = Math.sin(t * 0.8) * 4;
+              gemStage.style.transform =
+                'translateY(' + bobY.toFixed(1) + 'px) rotate(' + tilt.toFixed(2) + 'deg)';
+            }
+
+            if (e < 1) raf = requestAnimationFrame(tick);
+          }
+            if (e < 1) raf = requestAnimationFrame(tick);
+          }
+
+          init();
+          addEventListener('resize', init);
+          raf = requestAnimationFrame(tick);
+
+          /* страховка: останавливаем анимацию через 8 сек в любом случае */
+          setTimeout(function () { if (raf) cancelAnimationFrame(raf); }, 8000);
+        }
+      } catch (e) { /* океан не критичен — сайт всё равно откроется */ }
+
+      /* === Счётчик процентов === */
+      try {
+        var pctEl = document.getElementById('pct');
+        if (pctEl) {
+          var C_DUR = 1500, C_DELAY = 1000;
+          setTimeout(function () {
+            var t0 = performance.now();
+            function step(now) {
+              var k = Math.min(1, (now - t0) / C_DUR);
+              var ee = 1 - Math.pow(1 - k, 3);
+              pctEl.textContent = Math.round(ee * 100);
+              if (k < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+          }, C_DELAY);
+        }
+      } catch (e) {}
+      /* === Плавное проявление картинок === */
+      try {
+        document.querySelectorAll('.thumb').forEach(function (img) {
+          if (img.complete && img.naturalWidth > 0) img.classList.add('visible');
+          else img.addEventListener('load', function () { img.classList.add('visible'); });
+        });
+      } catch (e) {
+        document.querySelectorAll('.thumb').forEach(function (img) {
+          img.classList.add('visible');
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
