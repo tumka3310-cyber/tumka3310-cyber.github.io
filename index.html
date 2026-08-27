@@ -51,9 +51,7 @@
       opacity: 0.25;
     }
 
-    /* =========================================================
-       ПРЕЛОАДЕР — КИНЕМАТОГРАФИЧНАЯ ЗАСТАВКА
-       ========================================================= */
+    /* ===== ПРЕЛОАДЕР ===== */
     #preloader {
       position: fixed;
       inset: 0;
@@ -63,7 +61,6 @@
       overflow: hidden;
     }
 
-    /* две шторки, которые разойдутся в конце */
     .shutter {
       position: absolute;
       left: 0;
@@ -81,7 +78,6 @@
     #preloader.done .shutter-top    { transform: translateY(-101%); }
     #preloader.done .shutter-bottom { transform: translateY(101%); }
 
-    /* летающие частицы */
     #dust {
       position: absolute;
       inset: 0;
@@ -103,14 +99,12 @@
       animation: warpOut 0.7s cubic-bezier(0.7, 0, 0.84, 0) forwards;
     }
 
-    /* логотип «варпуется» — увеличивается, размывается и растворяется */
     @keyframes warpOut {
-      0%   { transform: scale(1);    opacity: 1; filter: blur(0); }
-      35%  { transform: scale(1.1);  opacity: 1; filter: blur(0); }
-      100% { transform: scale(1.9);  opacity: 0; filter: blur(16px); }
+      0%   { transform: scale(1);   opacity: 1; filter: blur(0); }
+      35%  { transform: scale(1.1); opacity: 1; filter: blur(0); }
+      100% { transform: scale(1.9); opacity: 0; filter: blur(16px); }
     }
 
-    /* вспышка в момент перехода */
     .flash {
       position: absolute;
       inset: 0;
@@ -126,7 +120,6 @@
       100% { opacity: 0; }
     }
 
-    /* ударные волны */
     .shockwave {
       position: absolute;
       left: 50%;
@@ -150,7 +143,6 @@
       100% { transform: scale(7);   opacity: 0; }
     }
 
-    /* ----- сцена с бриллиантом ----- */
     .gem-stage {
       position: relative;
       width: 160px;
@@ -159,7 +151,6 @@
       place-items: center;
     }
 
-    /* мягкое свечение за бриллиантом */
     .gem-stage::before {
       content: "";
       position: absolute;
@@ -176,7 +167,6 @@
       50%      { transform: scale(1.18); opacity: 1; }
     }
 
-    /* орбитальные кольца */
     .ring {
       position: absolute;
       border-radius: 50%;
@@ -214,7 +204,6 @@
     @keyframes spin    { to { transform: rotate(360deg); } }
     @keyframes spinRev { to { transform: rotate(-360deg); } }
 
-    /* сам бриллиант */
     .gem {
       position: relative;
       width: 88px;
@@ -223,7 +212,6 @@
       animation: gemLife 3.2s ease-in-out infinite;
     }
 
-    /* парение + лёгкий 3D-наклон */
     @keyframes gemLife {
       0%, 100% { transform: translateY(0)   rotateY(-10deg); }
       50%      { transform: translateY(-10px) rotateY(10deg); }
@@ -237,7 +225,6 @@
     .gem-path.facets { animation-delay: 0.55s; }
     @keyframes draw { to { stroke-dashoffset: 0; } }
 
-    /* искры вокруг бриллианта */
     .sparkle {
       position: absolute;
       color: #f0d9a8;
@@ -256,7 +243,6 @@
       50%      { opacity: 1;   transform: scale(1.2) rotate(60deg); }
     }
 
-    /* ----- логотип ----- */
     .logo-text {
       position: relative;
       perspective: 600px;
@@ -315,7 +301,6 @@
       to   { opacity: 0.9; transform: translateY(0); }
     }
 
-    /* прогресс: полоска + проценты */
     .loader-meta {
       display: flex;
       align-items: center;
@@ -349,9 +334,7 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* =========================================================
-       СТРАНИЦА
-       ========================================================= */
+    /* ===== СТРАНИЦА ===== */
     .page {
       min-height: 100vh;
       padding: 24px;
@@ -590,7 +573,7 @@
 </head>
 <body>
 
-  <!-- ===== КИНЕМАТОГРАФИЧНАЯ ЗАСТАВКА ===== -->
+  <!-- ===== ЗАСТАВКА ===== -->
   <div id="preloader">
     <div class="shutter shutter-top"></div>
     <div class="shutter shutter-bottom"></div>
@@ -675,4 +658,21 @@
           </div>
         </a>
 
-        <!-- Mood Pack 
+        <!-- Mood Pack -->
+        <a class="gift-card" href="https://t.me/nft/MoodPack-36867" target="_blank" rel="noopener noreferrer">
+          <div class="thumb-wrap">
+            <div class="thumb-glow"></div>
+            <div class="thumb-fallback">🎒</div>
+            <div class="thumb-float">
+              <img class="thumb" src="images/mood-pack.png" alt="Mood Pack #36867" loading="lazy" onerror="this.remove()" />
+            </div>
+            <div class="thumb-shine"></div>
+          </div>
+          <div class="content">
+            <h2 class="name">Mood Pack <span class="num">#36,867</span></h2>
+            <div class="meta">
+              <span class="price">Jolly Roger</span>
+              <span>•</span>
+              <span>Limited drop</span>
+            </div>
+      
