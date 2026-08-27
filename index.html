@@ -27,19 +27,33 @@ button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
 .rip{position:absolute;border-radius:50%;background:currentColor;opacity:.15;transform:scale(0);animation:rip .55s ease-out forwards;pointer-events:none}
 @keyframes rip{to{transform:scale(1);opacity:0}}
 
+/* ===== TERMS MODAL ===== */
+#terms{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);display:grid;place-items:center;padding:20px}
+#terms.hide{display:none}
+.tcard{background:var(--sc);border:1px solid rgba(255,255,255,.1);border-radius:26px;padding:30px 26px 24px;max-width:420px;width:100%;text-align:center;animation:up .35s cubic-bezier(.2,.7,.3,1)}
+.tcard .tl{width:56px;height:56px;border-radius:16px;background:var(--pcontainer);display:grid;place-items:center;margin:0 auto 16px}
+.tcard .tl svg{width:28px;height:28px;fill:var(--on-pcontainer)}
+.tcard h2{font-size:23px;font-weight:900;margin-bottom:12px}
+.tcard p{color:var(--on-sv);font-size:14.5px;line-height:1.7;margin-bottom:20px;text-align:left}
+.tbtn-acc{width:100%;padding:14px;border-radius:999px;background:var(--primary);color:var(--on-primary);font-weight:900;font-size:15px;transition:filter .2s,transform .15s}
+.tbtn-acc:hover{filter:brightness(1.08)}
+.tbtn-acc:active{transform:scale(.97)}
+.tnya{font-family:ui-monospace,Consolas,monospace;color:var(--primary);font-size:14px;margin-top:16px;letter-spacing:.05em}
+
 .bar{position:sticky;top:10px;z-index:50;background:var(--sc);border-radius:22px;padding:10px 12px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,.35)}
-.bar-row{display:flex;align-items:center;gap:10px}
+.bar-row{display:flex;align-items:center;gap:8px}
 .logo{width:40px;height:40px;border-radius:12px;background:var(--pcontainer);display:grid;place-items:center;flex-shrink:0}
 .logo svg{width:20px;height:20px;fill:var(--on-pcontainer)}
 .brand{font-weight:900;font-size:15px;letter-spacing:.12em;color:var(--on-sv);margin-right:auto}
 .ibtn{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:var(--on-sv);transition:background .2s,color .2s}
 .ibtn:hover{background:rgba(255,255,255,.07)}
 .ibtn svg{width:20px;height:20px;fill:currentColor}
-.ibtn.on{color:var(--primary)}
-.ibtn .wave{display:none}
-.ibtn.on .wave{display:block}
-.ibtn.on .mute-line{display:none}
-/* аватар в шапке: буква-подложка, картинка поверх на весь круг */
+#sndBtn.on{color:var(--primary)}
+/* play-иконка и pause-иконка переключаются */
+#sndBtn .icoPlay{display:block}
+#sndBtn.on .icoPlay{display:none}
+#sndBtn.on .icoStop{display:block}
+#sndBtn .icoStop{display:none}
 .bar-ava{position:relative;width:38px;height:38px;border-radius:50%;overflow:hidden;background:var(--pcontainer);display:grid;place-items:center;font-weight:900;font-size:15px;color:var(--on-pcontainer);flex-shrink:0}
 .bar-ava img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .tabs{display:flex;gap:4px;margin-top:10px;overflow-x:auto}
@@ -65,7 +79,6 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 .hero .star{position:absolute;right:-60px;top:-80px;width:400px;height:400px;fill:rgba(255,255,255,.14);pointer-events:none}
 .hero h1{position:relative;font-size:clamp(34px,8vw,60px);font-weight:900;letter-spacing:-.03em;color:#f3edf7;line-height:1.05;margin:76px 0 10px}
 .hero .sub{position:relative;color:rgba(243,237,247,.85);font-size:16px;font-weight:500}
-/* большой аватар: та же схема — буква-подложка, картинка поверх */
 .ava{position:absolute;top:20px;right:20px;width:92px;height:92px;border-radius:50%;overflow:hidden;background:#241a3f;display:grid;place-items:center;font-size:34px;font-weight:900;color:var(--on-pcontainer);border:3px solid rgba(255,255,255,.3)}
 .ava img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 
@@ -91,12 +104,15 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 .lrow .li svg{width:18px;height:18px;fill:var(--on-pcontainer)}
 .lrow p{font-size:15px;font-weight:500}
 
-.hrow{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:18px;background:var(--sch);margin-bottom:8px}
-.hrow:last-child{margin-bottom:0}
-.hrow .hi{width:46px;height:46px;border-radius:13px;background:var(--pcontainer);display:grid;place-items:center;flex-shrink:0}
-.hrow .hi svg{width:21px;height:21px;fill:var(--on-pcontainer)}
-.hrow .lbl{color:var(--on-sv);font-size:13px;margin-bottom:2px}
-.hrow .val{font-size:17px;font-weight:700}
+.soon{display:flex;flex-direction:column;align-items:center;gap:14px;padding:44px 20px}
+.soon .ci{width:64px;height:64px;border-radius:18px;background:var(--pcontainer);display:grid;place-items:center;animation:soonPulse 2.2s ease-in-out infinite}
+.soon .ci svg{width:30px;height:30px;fill:var(--on-pcontainer)}
+@keyframes soonPulse{
+  0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(208,188,255,.25)}
+  50%{transform:scale(1.06);box-shadow:0 0 0 12px rgba(208,188,255,0)}
+}
+.soon .st1{font-size:22px;font-weight:900}
+.soon .st2{color:var(--on-sv);font-size:14px;margin-top:-6px}
 
 .dcard{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:18px;background:var(--sch);margin-bottom:8px}
 .dcard:last-child{margin-bottom:0}
@@ -107,6 +123,9 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 .chipb svg{width:13px;height:13px;fill:currentColor}
 
 .foot{font-family:ui-monospace,Consolas,monospace;text-align:center;color:var(--on-sv);font-size:13px;letter-spacing:.06em;padding:22px 0 16px;opacity:.8}
+
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(16px);padding:11px 20px;border-radius:12px;background:var(--schst);font-size:14px;font-weight:500;opacity:0;pointer-events:none;transition:.3s;z-index:99;box-shadow:0 6px 20px rgba(0,0,0,.5);max-width:90vw;text-align:center}
+#toast.sh{opacity:1;transform:translateX(-50%)}
 
 #pre{position:fixed;inset:0;z-index:100;background:var(--surface);display:grid;place-items:center;transition:opacity .45s}
 #pre.off{opacity:0;pointer-events:none}
@@ -121,9 +140,24 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 </head>
 <body>
 
+<!-- ===== TERMS OF USE ===== -->
+<div id="terms">
+  <div class="tcard">
+    <div class="tl"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 15h8v2H8v-2zm0-4h8v2H8v-2z"/></svg></div>
+    <h2>Terms of Use</h2>
+    <p>By using this site you agree to keep things friendly and respectful.
+This site does not collect or store any personal data.
+Music playback is optional and fully under your control.
+All content belongs to their respective owners.
+Just chill and enjoy the vibe.</p>
+    <button class="tbtn-acc rp" id="acceptBtn">I Agree</button>
+    <div class="tnya">nya &lt;333</div>
+  </div>
+</div>
+
 <div id="pre"><div class="sp"></div></div>
 
-<audio id="player" loop preload="none"><source src="music.mp3" type="audio/mpeg"></audio>
+<audio id="player" loop preload="metadata"><source src="music.mp3" type="audio/mpeg"></audio>
 
 <div class="wrap">
 
@@ -132,16 +166,18 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
     <div class="bar-row">
       <div class="logo"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/></svg></div>
       <span class="brand">THEFTFELT</span>
+      <!-- play / pause -->
+      <button class="ibtn rp" id="sndBtn" aria-label="Музыка вкл/выкл">
+        <svg class="icoPlay" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.8-1-3.3-2.5-4v8c1.5-.7 2.5-2.2 2.5-4zM14 3.2v2.1c2.9.9 5 3.5 5 6.7s-2.1 5.8-5 6.7v2.1c4-1 7-4.5 7-8.8s-3-7.8-7-8.8z"/></svg>
+        <svg class="icoStop" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9v7c0 1.1.9 2 2 2h4v-8H5v-1c0-3.87 3.13-7 7-7s7 3.13 7 7v1h-4v8h4c1.1 0 2-.9 2-2v-7c0-4.97-4.03-9-9-9z"/></svg>
+      </button>
+      <!-- громкость -->
       <div class="sound-wrap">
-        <button class="ibtn rp" id="sndBtn" aria-label="Музыка">
-          <svg viewBox="0 0 24 24">
-            <path d="M3 9v6h4l5 5V4L7 9H3z"/>
-            <path class="wave" d="M16 8.5a4.5 4.5 0 0 1 0 7l-1.2-1.6a2.5 2.5 0 0 0 0-3.8L16 8.5zm2.5-3.2a8.2 8.2 0 0 1 0 13.4l-1.2-1.6a6.2 6.2 0 0 0 0-10.2l1.2-1.6z"/>
-            <path class="mute-line" d="M19.7 5.7 5.7 19.7l-1.4-1.4 14-14z"/>
-          </svg>
+        <button class="ibtn rp" id="volBtn" aria-label="Громкость">
+          <svg viewBox="0 0 24 24"><path d="M4 7h4v2H4V7zm0 4h4v2H4v-2zm0 4h4v2H4v-2zM10 7h10v2H10V7zm0 4h10v2H10v-2zm0 4h10v2h-10v-2z"/></svg>
         </button>
         <div class="volpop" id="volPop">
-          <label>Громкость <b id="volVal">70%</b></label>
+          <label>Volume <b id="volVal">70%</b></label>
           <input type="range" id="volSlider" min="0" max="100" value="70">
         </div>
       </div>
@@ -209,10 +245,6 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
         <span class="li"><svg viewBox="0 0 24 24"><path d="M11 9h2V7h-2v2zm1 13C6.48 22 2 17.52 2 12S6.48 2 12 2s10 4.48 10 10-4.48 10-10 10zm0-2c4.41 0 8-3.59 8-8s-3.59-8-8-8-8 3.59-8 8 3.59 8 8 8zm-1-4h2v2h-2v-2z"/></svg></span>
         <p>Весёлый парень :3</p>
       </div>
-      <div class="lrow">
-        <span class="li"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.2L4 17.2V4h16v12z"/></svg></span>
-        <p>Всегда на связи — пиши в Telegram</p>
-      </div>
     </div>
     <div class="foot">nya</div>
   </section>
@@ -225,33 +257,10 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
         <h2>Hardware</h2>
       </div>
 
-      <div class="hrow">
-        <span class="hi"><svg viewBox="0 0 24 24"><path d="M15 9H9v6h6V9zm-2 4h-2v-2h2v2zm8-2V9h-2V7c0-1.1-.9-2-2-2h-2V3h-2v2h-2V3H9v2H7c-1.1 0-2 .9-2 2v2H3v2h2v2H3v2h2v2c0 1.1.9 2 2 2h2v2h2v-2h2v2h2v-2h2c1.1 0 2-.9 2-2v-2h2v-2h-2v-2h2zm-4 6H7V7h10v10z"/></svg></span>
-        <div>
-          <div class="lbl">Processor</div>
-          <div class="val">AMD Ryzen 5 7600X</div>
-        </div>
-      </div>
-      <div class="hrow">
-        <span class="hi"><svg viewBox="0 0 24 24"><path d="M21 10V7a2 2 0 0 0-2-2h-5V3h-4v2H5a2 2 0 0 0-2 2v3H1v4h2v3a2 2 0 0 0 2 2h5v2h4v-2h5a2 2 0 0 0 2-2v-3h2v-4h-2zm-4 8H7V6h10v12z"/></svg></span>
-        <div>
-          <div class="lbl">Graphics card</div>
-          <div class="val">NVIDIA GeForce RTX 4060</div>
-        </div>
-      </div>
-      <div class="hrow">
-        <span class="hi"><svg viewBox="0 0 24 24"><path d="M4 7h16v2H4V7zm0 4h16v2H4v-2zm0 4h16v2H4v-2z"/></svg></span>
-        <div>
-          <div class="lbl">Memory</div>
-          <div class="val">32 GB</div>
-        </div>
-      </div>
-      <div class="hrow">
-        <span class="hi"><svg viewBox="0 0 24 24"><path d="M20 18c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/></svg></span>
-        <div>
-          <div class="lbl">Operating system</div>
-          <div class="val">Windows 11</div>
-        </div>
+      <div class="soon">
+        <span class="ci"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-.88-.01-1.73-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.5-1.11-1.5-.91-.63.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.35 1.12 2.92.85.09-.66.35-1.12.63-1.37-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.28 2.75 1.05a9.36 9.36 0 0 1 5 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.4.2 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.8-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.6.69.49A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2z"/></svg></span>
+        <div class="st1">Coming soon</div>
+        <div class="st2">Эта вкладка пока в разработке</div>
       </div>
     </div>
     <div class="foot">nya</div>
@@ -286,14 +295,26 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 
 </div>
 
-<noscript><style>#pre{display:none}.panel{display:block}.tab:not(.on){display:none}</style></noscript>
+<div id="toast"></div>
+
+<noscript><style>#pre,#terms{display:none}.panel{display:block}.tab:not(.on){display:none}</style></noscript>
 
 <script>
+/* ===== TERMS ===== */
+var terms=document.getElementById('terms'),accBtn=document.getElementById('acceptBtn');
+try{if(localStorage.getItem('termsOk')==='1')terms.classList.add('hide')}catch(e){}
+accBtn.onclick=function(){
+  terms.classList.add('hide');
+  try{localStorage.setItem('termsOk','1')}catch(e){}
+};
+
+/* ===== PRELOADER ===== */
 var pre=document.getElementById('pre'),off=false;
 function go(){if(off)return;off=true;
   setTimeout(function(){pre.classList.add('off');setTimeout(function(){pre.remove()},500)},700)}
 setTimeout(go,3000);window.addEventListener('load',go);
 
+/* ===== TABS ===== */
 document.querySelectorAll('.tab').forEach(function(b){
   b.onclick=function(){
     document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});
@@ -302,28 +323,46 @@ document.querySelectorAll('.tab').forEach(function(b){
     document.getElementById('p-'+b.dataset.p).classList.add('on');
   }});
 
-var pl=document.getElementById('player'),sbtn=document.getElementById('sndBtn'),
-    pop=document.getElementById('volPop'),vol=document.getElementById('volSlider'),
-    volVal=document.getElementById('volVal');
-pl.volume=0.7;
+/* ===== МУЗЫКА: клик по динамику = сразу play/pause ===== */
+var pl=document.getElementById('player'),
+    sbtn=document.getElementById('sndBtn'),
+    vbtn=document.getElementById('volBtn')
+    pop=document.getElementById('volPop')
+    vol=document.getElementById('volSlider')
+    volVal=document.getElementById('volVal')
+    toast=document.getElementById('toast')
+    fileOk=true
+  pl.volume=0.7;
+
+  /* если music.mp3 не найден — запомним */
+pl.addEventListener('error',function(){fileOk=false},true);
+
+function toastMsg(t){
+  toast.textContent=t;toast.classList.add('sh');
+  setTimeout(function(){toast.classList.remove('sh')},2500);
+}
+
 sbtn.onclick=function(){
-  var opened=pop.classList.toggle('open');
-  if(!opened){
-    if(pl.paused){pl.play().then(function(){sbtn.classList.add('on')}).catch(function(){sbtn.classList.remove('on')})}
-    else{pl.pause();sbtn.classList.remove('on')}
+  if(!fileOk){
+    toastMsg('music.mp3 не найден — загрузите файл в репозиторий');
+    return;
+  }
+  if(pl.paused){
+    pl.play().then(function(){sbtn.classList.add('on')})
+      .catch(function(){toastMsg('Браузер заблокировал звук — кликните ещё раз')});
+  }else{
+    pl.pause();sbtn.classList.remove('on');
   }
 };
+
+  /* громкость — отдельная кнопка */
+vbtn.onclick=function(){pop.classList.toggle('open')};
 document.addEventListener('pointerdown',function(e){
-  if(!pop.contains(e.target)&&!sbtn.contains(e.target))pop.classList.remove('open');
-});
-pop.addEventListener('click',function(e){
-  if(e.target===pop){
-    if(pl.paused){pl.play().then(function(){sbtn.classList.add('on')}).catch(function(){})}
-    else{pl.pause();sbtn.classList.remove('on')}
-  }
+  if(!pop.contains(e.target)&&!vbtn.contains(e.target))pop.classList.remove('open');
 });
 vol.oninput=function(){pl.volume=this.value/100;volVal.textContent=this.value+'%'};
 
+/* ===== RIPPLE ===== */
 document.addEventListener('pointerdown',function(e){
   var t=e.target.closest('.rp');if(!t)return;
   var r=t.getBoundingClientRect(),d=Math.max(r.width,r.height)*1.15,s=document.createElement('span');
