@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#141218">
+<title>@theftfelt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --surface:#141218; --sc:#211f26; --sch:#2b2930; --schst:#36343b;
+  --primary:#d0bcff; --on-primary:#381e72;
+  --pcontainer:#4f378b; --on-pcontainer:#eaddff;
+  --scontainer:#4a4458; --on-scontainer:#eaddff;
+  --on-surface:#e6e0e9; --on-sv:#cac4d0; --outline:#938f99; --ov:#49454f;
+  --rx:24px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--surface);color:var(--on-surface);font:400 16px/1.5 Roboto,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
+.wrap{max-width:680px;margin:0 auto;padding:12px}
+
+.rp{position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent}
+.rip{position:absolute;border-radius:50%;background:currentColor;opacity:.15;transform:scale(0);animation:rip .55s ease-out forwards;pointer-events:none}
+@keyframes rip{to{transform:scale(1);opacity:0}}
+
+/* ===== TERMS MODAL ===== */
+#terms{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);display:grid;place-items:center;padding:20px}
+#terms.hide{display:none}
+.tcard{background:var(--sc);border:1px solid rgba(255,255,255,.1);border-radius:26px;padding:30px 26px 24px;max-width:420px;width:100%;text-align:center;animation:up .35s cubic-bezier(.2,.7,.3,1)}
+.tcard .tl{width:56px;height:56px;border-radius:16px;background:var(--pcontainer);display:grid;place-items:center;margin:0 auto 16px}
+.tcard .tl svg{width:28px;height:28px;fill:var(--on-pcontainer)}
+.tcard h2{font-size:23px;font-weight:900;margin-bottom:12px}
+.tcard p{color:var(--on-sv);font-size:14.5px;line-height:1.7;margin-bottom:20px;text-align:left}
+.tbtn-acc{width:100%;padding:14px;border-radius:999px;background:var(--primary);color:var(--on-primary);font-weight:900;font-size:15px;transition:filter .2s,transform .15s}
+.tbtn-acc:hover{filter:brightness(1.08)}
+.tbtn-acc:active{transform:scale(.97)}
+.tnya{font-family:ui-monospace,Consolas,monospace;color:var(--primary);font-size:14px;margin-top:16px;letter-spacing:.05em}
+
+.bar{position:sticky;top:10px;z-index:50;background:var(--sc);border-radius:22px;padding:10px 12px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,.35)}
+.bar-row{display:flex;align-items:center;gap:8px}
+.logo{width:40px;height:40px;border-radius:12px;background:var(--pcontainer);display:grid;place-items:center;flex-shrink:0}
+.logo svg{width:20px;height:20px;fill:var(--on-pcontainer)}
+.brand{font-weight:900;font-size:15px;letter-spacing:.12em;color:var(--on-sv);margin-right:auto}
+.ibtn{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:var(--on-sv);transition:background .2s,color .2s}
+.ibtn:hover{background:rgba(255,255,255,.07)}
+.ibtn svg{width:20px;height:20px;fill:currentColor}
+#sndBtn.on{color:var(--primary)}
+/* play-иконка и pause-иконка переключаются */
+#sndBtn .icoPlay{display:block}
+#sndBtn.on .icoPlay{display:none}
+#sndBtn.on .icoStop{display:block}
+#sndBtn .icoStop{display:none}
+.bar-ava{position:relative;width:38px;height:38px;border-radius:50%;overflow:hidden;background:var(--pcontainer);display:grid;place-items:center;font-weight:900;font-size:15px;color:var(--on-pcontainer);flex-shrink:0}
+.bar-ava img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tabs{display:flex;gap:4px;margin-top:10px;overflow-x:auto}
+.tab{display:flex;align-items:center;gap:7px;padding:9px 16px;border-radius:999px;color:var(--on-sv);font-weight:500;font-size:14px;white-space:nowrap;transition:background .2s,color .2s}
+.tab svg{width:18px;height:18px;fill:currentColor}
+.tab:hover{background:rgba(255,255,255,.06)}
+.tab.on{background:var(--scontainer);color:var(--on-scontainer)}
+
+.volpop{position:absolute;top:56px;right:0;background:var(--schst);border-radius:18px;padding:14px 16px;display:none;flex-direction:column;gap:9px;box-shadow:0 8px 28px rgba(0,0,0,.55);min-width:210px;z-index:60}
+.volpop.open{display:flex;animation:up .2s cubic-bezier(.2,.7,.3,1)}
+.volpop label{font-size:12px;font-weight:500;color:var(--on-sv);display:flex;justify-content:space-between}
+.volpop label b{color:var(--primary)}
+input[type=range]{-webkit-appearance:none;width:100%;height:6px;border-radius:3px;background:var(--ov);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--primary)}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--primary);border:none}
+.sound-wrap{position:relative}
+
+.panel{display:none;animation:up .3s cubic-bezier(.2,.7,.3,1)}
+.panel.on{display:block}
+@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+.hero{position:relative;overflow:hidden;border-radius:var(--rx);padding:28px 24px 24px;background:linear-gradient(125deg,#9a7fd6 0%,#6750a4 50%,#4a3577 100%);margin-bottom:12px}
+.hero .star{position:absolute;right:-60px;top:-80px;width:400px;height:400px;fill:rgba(255,255,255,.14);pointer-events:none}
+.hero h1{position:relative;font-size:clamp(34px,8vw,60px);font-weight:900;letter-spacing:-.03em;color:#f3edf7;line-height:1.05;margin:76px 0 10px}
+.hero .sub{position:relative;color:rgba(243,237,247,.85);font-size:16px;font-weight:500}
+.ava{position:absolute;top:20px;right:20px;width:92px;height:92px;border-radius:50%;overflow:hidden;background:#241a3f;display:grid;place-items:center;font-size:34px;font-weight:900;color:var(--on-pcontainer);border:3px solid rgba(255,255,255,.3)}
+.ava img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+.social{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+.sbtn{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;border-radius:999px;background:var(--sch);font-weight:700;font-size:15px;transition:background .2s,transform .15s}
+.sbtn:hover{background:var(--schst)}
+.sbtn:active{transform:scale(.98)}
+.sbtn .ic{width:26px;height:26px;border-radius:50%;background:var(--scontainer);display:grid;place-items:center;flex-shrink:0}
+.sbtn .ic svg{width:14px;height:14px;fill:var(--on-scontainer)}
+
+.sect{background:var(--sc);border-radius:var(--rx);padding:18px;margin-bottom:12px}
+.shead{display:flex;align-items:center;gap:13px;margin-bottom:14px}
+.shead .sq{width:44px;height:44px;border-radius:13px;background:var(--pcontainer);display:grid;place-items:center;flex-shrink:0}
+.shead .sq svg{width:21px;height:21px;fill:var(--on-pcontainer)}
+.shead h2{font-size:21px;font-weight:700}
+
+.quote blockquote{font-size:clamp(19px,3.6vw,24px);font-weight:500;line-height:1.35;margin:4px 0 12px}
+.quote cite{font-style:normal;color:var(--on-sv);font-size:14px}
+
+.lrow{display:flex;align-items:center;gap:13px;padding:14px 16px;border-radius:18px;background:var(--sch);margin-bottom:8px}
+.lrow:last-child{margin-bottom:0}
+.lrow .li{width:38px;height:38px;border-radius:11px;background:var(--pcontainer);display:grid;place-items:center;flex-shrink:0}
+.lrow .li svg{width:18px;height:18px;fill:var(--on-pcontainer)}
+.lrow p{font-size:15px;font-weight:500}
+
+.soon{display:flex;flex-direction:column;align-items:center;gap:14px;padding:44px 20px}
+.soon .ci{width:64px;height:64px;border-radius:18px;background:var(--pcontainer);display:grid;place-items:center;animation:soonPulse 2.2s ease-in-out infinite}
+.soon .ci svg{width:30px;height:30px;fill:var(--on-pcontainer)}
+@keyframes soonPulse{
+  0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(208,188,255,.25)}
+  50%{transform:scale(1.06);box-shadow:0 0 0 12px rgba(208,188,255,0)}
+}
+.soon .st1{font-size:22px;font-weight:900}
+.soon .st2{color:var(--on-sv);font-size:14px;margin-top:-6px}
+
+.dcard{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:18px;background:var(--sch);margin-bottom:8px}
+.dcard:last-child{margin-bottom:0}
+.dcard .di{width:46px;height:46px;border-radius:13px;background:#5c3a4a;display:grid;place-items:center;flex-shrink:0}
+.dcard .di svg{width:22px;height:22px;fill:var(--on-pcontainer)}
+.dname{font-size:17px;font-weight:700;margin-bottom:7px}
+.chipb{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:10px;background:var(--pcontainer);color:var(--on-pcontainer);font-size:12.5px;font-weight:700}
+.chipb svg{width:13px;height:13px;fill:currentColor}
+
+.foot{font-family:ui-monospace,Consolas,monospace;text-align:center;color:var(--on-sv);font-size:13px;letter-spacing:.06em;padding:22px 0 16px;opacity:.8}
+
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(16px);padding:11px 20px;border-radius:12px;background:var(--schst);font-size:14px;font-weight:500;opacity:0;pointer-events:none;transition:.3s;z-index:99;box-shadow:0 6px 20px rgba(0,0,0,.5);max-width:90vw;text-align:center}
+#toast.sh{opacity:1;transform:translateX(-50%)}
+
+#pre{position:fixed;inset:0;z-index:100;background:var(--surface);display:grid;place-items:center;transition:opacity .45s}
+#pre.off{opacity:0;pointer-events:none}
+#pre .sp{width:48px;height:48px;border-radius:50%;border:4px solid var(--ov);border-top-color:var(--primary);animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:560px){
+  .social{grid-template-columns:1fr}
+  .hero h1{margin-top:70px}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== TERMS OF USE ===== -->
+<div id="terms">
+  <div class="tcard">
+    <div class="tl"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 15h8v2H8v-2zm0-4h8v2H8v-2z"/></svg></div>
+    <h2>Terms of Use</h2>
+    <p>By using this site you agree to keep things friendly and respectful.
+This site does not collect or store any personal data.
+Music playback is optional and fully under your control.
+All content belongs to their respective owners.
+Just chill and enjoy the vibe.</p>
+    <button class="tbtn-acc rp" id="acceptBtn">I Agree</button>
+    <div class="tnya">nya &lt;333</div>
+  </div>
+</div>
+
+<div id="pre"><div class="sp"></div></div>
+
+<audio id="player" loop preload="metadata"><source src="music.mp3" type="audio/mpeg"></audio>
+
+<div class="wrap">
+
+  <!-- APP BAR -->
+  <header class="bar">
+    <div class="bar-row">
+      <div class="logo"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/></svg></div>
+      <span class="brand">THEFTFELT</span>
+      <!-- play / pause -->
+      <button class="ibtn rp" id="sndBtn" aria-label="Музыка вкл/выкл">
+        <svg class="icoPlay" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.8-1-3.3-2.5-4v8c1.5-.7 2.5-2.2 2.5-4zM14 3.2v2.1c2.9.9 5 3.5 5 6.7s-2.1 5.8-5 6.7v2.1c4-1 7-4.5 7-8.8s-3-7.8-7-8.8z"/></svg>
+        <svg class="icoStop" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9v7c0 1.1.9 2 2 2h4v-8H5v-1c0-3.87 3.13-7 7-7s7 3.13 7 7v1h-4v8h4c1.1 0 2-.9 2-2v-7c0-4.97-4.03-9-9-9z"/></svg>
+      </button>
+      <!-- громкость -->
+      <div class="sound-wrap">
+        <button class="ibtn rp" id="volBtn" aria-label="Громкость">
+          <svg viewBox="0 0 24 24"><path d="M4 7h4v2H4V7zm0 4h4v2H4v-2zm0 4h4v2H4v-2zM10 7h10v2H10V7zm0 4h10v2H10v-2zm0 4h10v2h-10v-2z"/></svg>
+        </button>
+        <div class="volpop" id="volPop">
+          <label>Volume <b id="volVal">70%</b></label>
+          <input type="range" id="volSlider" min="0" max="100" value="70">
+        </div>
+      </div>
+      <div class="bar-ava">T<img src="avatar.png" alt="" onerror="this.remove()"></div>
+    </div>
+    <nav class="tabs">
+      <button class="tab rp on" data-p="main"><svg viewBox="0 0 24 24"><path d="M4 21V9l8-6 8 6v12h-6v-7h-4v7z"/></svg>Main</button>
+      <button class="tab rp" data-p="about"><svg viewBox="0 0 24 24"><path d="M12 12c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm0 2c-2.7 0-8 1.3-8 4v2h16v-2c0-2.7-5.3-4-8-4z"/></svg>About me</button>
+      <button class="tab rp" data-p="hw"><svg viewBox="0 0 24 24"><path d="M4 6h18v12h-8v2h4v2H6v-2h4v-2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm0 2v10h18V8H4z"/></svg>Hardware</button>
+      <button class="tab rp" data-p="devices"><svg viewBox="0 0 24 24"><path d="M15 2a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h4zm0 2h-4v2h4V4zm0 4h-4v10h4V8zm0 12v-2h-4v2h4zM2 6h5v2H4v8h3v2H2c-.6 0-1-.4-1-1V7c0-.6.4-1 1-1z"/></svg>Devices</button>
+    </nav>
+  </header>
+
+  <!-- ===== MAIN ===== -->
+  <section class="panel on" id="p-main">
+    <div class="hero">
+      <svg class="star" viewBox="0 0 24 24"><path d="M12 1l2.9 8.1L23 12l-8.1 2.9L12 23l-2.9-8.1L1 12l8.1-2.9z"/></svg>
+      <div class="ava">T<img src="avatar.png" alt="" onerror="this.remove()"></div>
+      <h1>Hi, I'm theftfelt</h1>
+      <div class="sub">theftfelt · Telegram</div>
+    </div>
+
+    <div class="social">
+      <a class="sbtn rp" href="https://t.me/theftfelt" target="_blank" rel="noopener">
+        <span class="ic"><svg viewBox="0 0 24 24"><path d="M9.04 15.51 8.9 19.1c.39 0 .56-.17.77-.37l1.85-1.77 3.83 2.8c.7.39 1.2.19 1.39-.65l2.52-11.82c.22-1.04-.38-1.45-1.06-1.2L3.36 11.6c-1.01.39-1 .95-.17 1.2l3.67 1.15 8.53-5.38c.4-.26.77-.12.47.15l-6.82 6.79Z"/></svg></span>
+        Telegram
+      </a>
+      <a class="sbtn rp" href="https://github.com/tumka3310-cyber" target="_blank" rel="noopener">
+        <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-.88-.01-1.73-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.5-1.11-1.5-.91-.63.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.35 1.12 2.92.85.09-.66.35-1.12.63-1.37-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.28 2.75 1.05a9.36 9.36 0 0 1 5 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.4.2 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.8-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.6.69.49A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2z"/></svg></span>
+        GitHub
+      </a>
+    </div>
+
+    <div class="sect">
+      <div class="shead">
+        <span class="sq"><svg viewBox="0 0 24 24"><path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/></svg></span>
+        <h2>Quote</h2>
+      </div>
+      <div class="quote">
+        <blockquote>«Many perish while trying to destroy others.»</blockquote>
+        <cite>— Thomas More</cite>
+      </div>
+    </div>
+
+    <div class="foot">nya</div>
+  </section>
+
+  <!-- ===== ABOUT ===== -->
+  <section class="panel" id="p-about">
+    <div class="sect">
+      <div class="shead">
+        <span class="sq"><svg viewBox="0 0 24 24"><path d="M12 12c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm0 2c-2.7 0-8 1.3-8 4v2h16v-2c0-2.7-5.3-4-8-4z"/></svg></span>
+        <h2>About me</h2>
+      </div>
+
+      <div class="lrow">
+        <span class="li"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.9-10-9.2C.5 8 2.4 4.5 6 4.5c2.1 0 3.6 1.1 4.5 2.6l1.5 2.3 1.5-2.3c.9-1.5 2.4-2.6 4.5-2.6 3.6 0 5.5 3.5 4 7.3C19.5 16.1 12 21 12 21z"/></svg></span>
+        <p>Люблю музыку и минимализм</p>
+      </div>
+      <div class="lrow">
+        <span class="li"><svg viewBox="0 0 24 24"><path d="M21 10V7a2 2 0 0 0-2-2h-5V3h-4v2H5a2 2 0 0 0-2 2v3H1v4h2v3a2 2 0 0 0 2 2h5v2h4v-2h5a2 2 0 0 0 2-2v-3h2v-4h-2zm-4 8H7V6h10v12z"/></svg></span>
+        <p>Увлекаюсь технологиями</p>
+      </div>
+      <div class="lrow">
+        <span class="li"><svg viewBox="0 0 24 24"><path d="M11 9h2V7h-2v2zm1 13C6.48 22 2 17.52 2 12S6.48 2 12 2s10 4.48 10 10-4.48 10-10 10zm0-2c4.41 0 8-3.59 8-8s-3.59-8-8-8-8 3.59-8 8 3.59 8 8 8zm-1-4h2v2h-2v-2z"/></svg></span>
+        <p>Весёлый парень :3</p>
+      </div>
+    </div>
+    <div class="foot">nya</div>
+  </section>
+
+  <!-- ===== HARDWARE ===== -->
+  <section class="panel" id="p-hw">
+    <div class="sect">
+      <div class="shead">
+        <span class="sq"><svg viewBox="0 0 24 24"><path d="M20 18c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/></svg></span>
+        <h2>Hardware</h2>
+      </div>
+
+      <div class="soon">
+        <span class="ci"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-.88-.01-1.73-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.5-1.11-1.5-.91-.63.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.35 1.12 2.92.85.09-.66.35-1.12.63-1.37-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.28 2.75 1.05a9.36 9.36 0 0 1 5 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.4.2 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.8-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.6.69.49A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2z"/></svg></span>
+        <div class="st1">Coming soon</div>
+        <div class="st2">Эта вкладка пока в разработке</div>
+      </div>
+    </div>
+    <div class="foot">nya</div>
+  </section>
+
+  <!-- ===== DEVICES ===== -->
+  <section class="panel" id="p-devices">
+    <div class="sect">
+      <div class="shead">
+        <span class="sq"><svg viewBox="0 0 24 24"><path d="M15 2a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h4zm0 2h-4v2h4V4zm0 4h-4v10h4V8zm0 12v-2h-4v2h4zM2 6h5v2H4v8h3v2H2c-.6 0-1-.4-1-1V7c0-.6.4-1 1-1z"/></svg></span>
+        <h2>My devices</h2>
+      </div>
+
+      <div class="dcard">
+        <span class="di"><svg viewBox="0 0 24 24"><path d="M17 1H7c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm0 18H7V5h10v14z"/></svg></span>
+        <div>
+          <div class="dname">Poco F4 GT</div>
+          <span class="chipb"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.9-10-9.2C.5 8 2.4 4.5 6 4.5c2.1 0 3.6 1.1 4.5 2.6l1.5 2.3 1.5-2.3c.9-1.5 2.4-2.6 4.5-2.6 3.6 0 5.5 3.5 4 7.3C19.5 16.1 12 21 12 21z"/></svg>Primary</span>
+        </div>
+      </div>
+
+      <div class="dcard">
+        <span class="di"><svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9v7c0 1.1.9 2 2 2h4v-8H5v-1c0-3.87 3.13-7 7-7s7 3.13 7 7v1h-4v8h4c1.1 0 2-.9 2-2v-7c0-4.97-4.03-9-9-9z"/></svg></span>
+        <div>
+          <div class="dname">AirPods Pro 2</div>
+          <span class="chipb"><svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9v7c0 1.1.9 2 2 2h4v-8H5v-1c0-3.87 3.13-7 7-7s7 3.13 7 7v1h-4v8h4c1.1 0 2-.9 2-2v-7c0-4.97-4.03-9-9-9z"/></svg>TWS</span>
+        </div>
+      </div>
+    </div>
+    <div class="foot">nya</div>
+  </section>
+
+</div>
+
+<div id="toast"></div>
+
+<noscript><style>#pre,#terms{display:none}.panel{display:block}.tab:not(.on){display:none}</style></noscript>
+
+<script>
+/* ===== TERMS ===== */
+var terms=document.getElementById('terms'),accBtn=document.getElementById('acceptBtn');
+try{if(localStorage.getItem('termsOk')==='1')terms.classList.add('hide')}catch(e){}
+accBtn.onclick=function(){
+  terms.classList.add('hide');
+  try{localStorage.setItem('termsOk','1')}catch(e){}
+};
+
+/* ===== PRELOADER ===== */
+var pre=document.getElementById('pre'),off=false;
+function go(){if(off)return;off=true;
+  setTimeout(function(){pre.classList.add('off');setTimeout(function(){pre.remove()},500)},700)}
+setTimeout(go,3000);window.addEventListener('load',go);
+
+/* ===== TABS ===== */
+document.querySelectorAll('.tab').forEach(function(b){
+  b.onclick=function(){
+    document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});
+    document.querySelectorAll('.panel').forEach(function(x){x.classList.remove('on')});
+    b.classList.add('on');
+    document.getElementById('p-'+b.dataset.p).classList.add('on');
+  }});
+
+/* ===== МУЗЫКА: клик по динамику = сразу play/pause ===== */
+var pl=document.getElementById('player'),
+    sbtn=document.getElementById('sndBtn'),
+    vbtn=document.getElementById('volBtn')
+    pop=document.getElementById('volPop')
+    vol=document.getElementById('volSlider')
+    volVal=document.getElementById('volVal')
+    toast=document.getElementById('toast')
+    fileOk=true
+  pl.volume=0.7;
+
+  /* если music.mp3 не найден — запомним */
+pl.addEventListener('error',function(){fileOk=false},true);
+
+function toastMsg(t){
+  toast.textContent=t;toast.classList.add('sh');
+  setTimeout(function(){toast.classList.remove('sh')},2500);
+}
+
+sbtn.onclick=function(){
+  if(!fileOk){
+    toastMsg('music.mp3 не найден — загрузите файл в репозиторий');
+    return;
+  }
+  if(pl.paused){
+    pl.play().then(function(){sbtn.classList.add('on')})
+      .catch(function(){toastMsg('Браузер заблокировал звук — кликните ещё раз')});
+  }else{
+    pl.pause();sbtn.classList.remove('on');
+  }
+};
+
+  /* громкость — отдельная кнопка */
+vbtn.onclick=function(){pop.classList.toggle('open')};
+document.addEventListener('pointerdown',function(e){
+  if(!pop.contains(e.target)&&!vbtn.contains(e.target))pop.classList.remove('open');
+});
+vol.oninput=function(){pl.volume=this.value/100;volVal.textContent=this.value+'%'};
+
+/* ===== RIPPLE ===== */
+document.addEventListener('pointerdown',function(e){
+  var t=e.target.closest('.rp');if(!t)return;
+  var r=t.getBoundingClientRect(),d=Math.max(r.width,r.height)*1.15,s=document.createElement('span');
+  s.className='rip';s.style.width=s.style.height=d+'px';
+  s.style.left=(e.clientX-r.left-d/2)+'px';s.style.top=(e.clientY-r.top-d/2)+'px';
+  t.appendChild(s);setTimeout(function(){s.remove()},600);
+});
+</script>
+</body>
+</html>
